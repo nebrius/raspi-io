@@ -2,7 +2,7 @@
   "name": "raspi-io",
   "version": "0.0.0",
   "description": "A Firmata-compatible Raspberry Pi device API",
-  "main": "index.js",
+  "main": "lib/raspi",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +15,9 @@
     "nodebots",
     "robots"
   ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
   "author": "Bryan Hughes <bryan@theoreticalideations.com>",
   "license": "MIT",
   "bugs": {
