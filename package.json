@@ -15,6 +15,9 @@
     "nodebots",
     "robots"
   ],
+  "dependencies": {
+    "async": "0.7.x"
+  },
   "engines": {
     "node": ">=0.8.0"
   },
