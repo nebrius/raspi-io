@@ -1,7 +1,7 @@
 {
   "name": "raspi-io",
   "version": "0.1.0",
-  "description": "A Firmata-compatible Raspberry Pi device API",
+  "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "lib/raspi",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
