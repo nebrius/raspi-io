@@ -24,13 +24,28 @@ var async = require('async');
 var GPIO = require('../lib/gpio');
 var numPassed = 0;
 var numFailed = 0;
+var isManaged = process.argv[2] == '--managed';
 
-console.log('Connect pin 7 (GPIO 4) to pin 11 (GPIO 17) and hit ENTER when done');
+if (isManaged) {
+  runTests();
+} else {
+  console.log('Connect pin 7 (GPIO 4) to pin 11 (GPIO 17) and hit ENTER when done');
+  var pollInterval = setInterval(function () {
+    if (process.stdin.read() !== null) {
+      clearInterval(pollInterval);
+      runTests();
+    }
+  }, 10);
+}
 
-var pollInterval = setInterval(function () {
-  if (process.stdin.read() !== null) {
-    clearInterval(pollInterval);
-    testGPIO(function () {
+function runTests() {
+  testGPIO(function () {
+    if (isManaged) {
+      process.send({
+        numPassed: numPassed,
+        numFailed: numFailed
+      });
+    } else {
       if (numPassed && numFailed) {
         console.log('\n' + numPassed + ' tests passed and ' + numFailed + ' tests failed\n');
       } else if (numPassed) {
@@ -40,10 +55,10 @@ var pollInterval = setInterval(function () {
       } else {
         console.log('\nNo tests finished\n');
       }
-      process.exit();
-    });
-  }
-}, 10);
+    }
+    process.exit();
+  });
+}
 
 function testGPIO(cb) {
   // Initialize pin 7
@@ -91,7 +106,7 @@ function testGPIO(cb) {
     var lastToggled = Date.now();
     process.stdout.write('Watching GPIO 17 and toggling it from GPIO 4...');
     pin11.watchValue(function (readValue) {
-      // Due to the asynchronous nature of watching, this test inherintly has a
+      // Due to the asynchronous nature of watching, this test inherently has a
       // race condition in it, so we need to ignore the time right after setting
       // to allow read loop to get back in sync
       if (Date.now() - lastToggled > 30 && setValue !== readValue) {

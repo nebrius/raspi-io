@@ -23,13 +23,28 @@ THE SOFTWARE.
 var Raspi = require('../lib/raspi');
 var numPassed = 0;
 var numFailed = 0;
+var isManaged = process.argv[2] == '--managed';
 
-console.log('Connect pin 7 (GPIO 4) to pin 11 (GPIO 17) and hit ENTER when done');
+if (isManaged) {
+  runTests();
+} else {
+  console.log('Connect pin 7 (GPIO 4) to pin 11 (GPIO 17) and hit ENTER when done');
+  var pollInterval = setInterval(function () {
+    if (process.stdin.read() !== null) {
+      clearInterval(pollInterval);
+      runTests();
+    }
+  }, 10);
+}
 
-var pollInterval = setInterval(function () {
-  if (process.stdin.read() !== null) {
-    clearInterval(pollInterval);
-    testRaspi(function () {
+function runTests() {
+  testRaspi(function () {
+    if (isManaged) {
+      process.send({
+        numPassed: numPassed,
+        numFailed: numFailed
+      });
+    } else {
       if (numPassed && numFailed) {
         console.log('\n' + numPassed + ' tests passed and ' + numFailed + ' tests failed\n');
       } else if (numPassed) {
@@ -39,10 +54,10 @@ var pollInterval = setInterval(function () {
       } else {
         console.log('\nNo tests finished\n');
       }
-      process.exit();
-    });
-  }
-}, 10);
+    }
+    process.exit();
+  });
+}
 
 function testRaspi(cb) {
   var board = new Raspi();
@@ -70,13 +85,12 @@ function testRaspi(cb) {
       process.stdout.write('Passed\n');
     }
 
-    // TODO: test digitalRead method
     var setValue = 0;
     var testFailed = false;
     var lastToggled = Date.now();
     process.stdout.write('Continuously reading pin 11 and toggling it from pin 7...');
     board.digitalRead(11, function (readValue) {
-      // Due to the asynchronous nature of watching, this test inherintly has a
+      // Due to the asynchronous nature of watching, this test inherently has a
       // race condition in it, so we need to ignore the time right after setting
       // to allow read loop to get back in sync
       if (Date.now() - lastToggled > 30 && setValue !== readValue) {

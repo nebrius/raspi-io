@@ -22,6 +22,9 @@
   "engines": {
     "node": ">=0.8.0"
   },
+  "scripts": {
+    "test": "node ./test/bootstrap.js"
+  },
   "author": "Bryan Hughes <bryan@theoreticalideations.com>",
   "license": "MIT",
   "bugs": {
