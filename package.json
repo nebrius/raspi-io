@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "lib/raspi",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://gitlab.theoreticalideations.com/nebrius/raspi-io"
