@@ -1,3 +1,7 @@
+## 0.1.4 (2014-05-13)
+
+- Fixed a publishing problem (functionality same as 0.1.3)
+
 ## 0.1.3 (2014-05-13)
 
 - Added a check for superuser access
