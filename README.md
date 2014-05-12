@@ -30,7 +30,11 @@ board.on('ready', function () {
 });
 ```
 
-In addition to the base Minimum Plugin Class Requirements as specified in the I/O plugin API for Johnny-Five, the following methods are supported: pinMode, digitalRead, and digitalWrite
+Pin numbers are identified by their pin number on the P1 header, so if you want to use GPIO 17, specify pin 11. Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of the P1 header.
+
+In addition to the base requirements specified in the I/O plugin API for Johnny-Five, the following methods are supported: pinMode, digitalRead, and digitalWrite.
+
+Note: analogRead and analogWrite throw an error if called because the Raspberry Pi does not have proper hardware support for these functions.
 
 License
 =======
