@@ -1,6 +1,8 @@
-## 0.1.6 (2014-05-15)
+## 0.1.7 (2014-05-15)
 
 - Re-added the root user check, but this time left it as a warning, not a hard error
+
+Note: there was an error publishing 0.1.6 which prevented using that version number
 
 ## 0.1.5 (2014-05-15)
 
