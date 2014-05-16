@@ -1,3 +1,7 @@
+## 0.1.6 (2014-05-15)
+
+- Re-added the root user check, but this time left it as a warning, not a hard error
+
 ## 0.1.5 (2014-05-15)
 
 - Removed the root user check because it's causing resin.io to break. Will fix later.
