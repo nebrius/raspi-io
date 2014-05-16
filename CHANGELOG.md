@@ -1,3 +1,7 @@
+## 0.1.5 (2014-05-15)
+
+- Removed the root user check because it's causing resin.io to break. Will fix later.
+
 ## 0.1.4 (2014-05-13)
 
 - Fixed a publishing problem (functionality same as 0.1.3)
