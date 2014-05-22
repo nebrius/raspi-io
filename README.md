@@ -42,13 +42,12 @@ Using raspi-io inside of Johnny-Five is pretty straightforward, although does ta
 
 ```JavaScript
 var raspi = require('raspi-io'),
-    five = require("johnny-five"),
-    // or "./lib/johnny-five" when running from the source
+    five = require('johnny-five'),
     board = new five.Board({
       io: new raspi()
     });
 
-board.on("ready", function() {
+board.on('ready', function() {
 
   // Create an Led on pin 7 (GPIO4) and strobe it on/off
   // Optionally set the speed; defaults to 100ms
