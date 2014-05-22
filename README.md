@@ -9,9 +9,9 @@ Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspbe
 npm install raspi-io
 ```
 
-## Usage
+## Direct Usage
 
-```
+```JavaScript
 var raspi = require('raspi-io');
 var board = new raspi();
 
@@ -35,6 +35,29 @@ Pin numbers are identified by their pin number on the P1 header, so if you want 
 In addition to the base requirements specified in the I/O plugin API for Johnny-Five, the following methods are supported: pinMode, digitalRead, and digitalWrite.
 
 Note: analogRead and analogWrite throw an error if called because the Raspberry Pi does not have proper hardware support for these functions.
+
+## Usage with Johnny-Five
+
+Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
+
+```JavaScript
+var raspi = require('raspi-io'),
+    five = require("johnny-five"),
+    // or "./lib/johnny-five" when running from the source
+    board = new five.Board({
+      io: new raspi()
+    });
+
+board.on("ready", function() {
+
+  // Create an Led on pin 7 (GPIO4) and strobe it on/off
+  // Optionally set the speed; defaults to 100ms
+  (new five.Led(7)).strobe();
+
+});
+```
+
+The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged into the Raspberry Pi.
 
 License
 =======
