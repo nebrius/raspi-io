@@ -1,3 +1,7 @@
+## 0.1.8 (2014-05-22)
+
+- Added support for ```normalize()``` and ```defautLed```
+
 ## 0.1.7 (2014-05-15)
 
 - Re-added the root user check, but this time left it as a warning, not a hard error
