@@ -1,3 +1,7 @@
+## 0.1.10 (2014-07-14)
+
+- Fixed a super embarrassing typo
+
 ## 0.1.9 (2014-06-09)
 
 - Fixed a bug where if you passed in a number as an alias, it caused a crash
