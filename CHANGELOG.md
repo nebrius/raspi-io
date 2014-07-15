@@ -1,3 +1,7 @@
+## 0.1.11 (2014-07-14)
+
+- Fixed a bug with LEDs on Arch Linux
+
 ## 0.1.10 (2014-07-14)
 
 - Fixed a super embarrassing typo
