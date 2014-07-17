@@ -1,3 +1,7 @@
+## 0.1.12 (2014-07-16)
+
+- Fleshed out default LED access from Johnny Five
+
 ## 0.1.11 (2014-07-14)
 
 - Fixed a bug with LEDs on Arch Linux
