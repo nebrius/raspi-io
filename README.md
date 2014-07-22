@@ -58,6 +58,8 @@ board.on('ready', function() {
 
 The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged into the Raspberry Pi.
 
+Note: you may also be interested in the [Raspi LLIO](https://gitlab.theoreticalideations.com/nebrius/raspi-llio/tree/master) library, which provides access to more of the Raspberry Pi's peripherals, but is lower-level and a little harder to use.
+
 License
 =======
 
