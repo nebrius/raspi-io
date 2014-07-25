@@ -1,3 +1,7 @@
+## 0.1.14 (2014-07-25)
+
+- Added proper API documentation
+
 ## 0.1.12 (2014-07-16)
 
 - Fleshed out default LED access from Johnny Five

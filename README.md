@@ -1,7 +1,9 @@
 Raspi-io
 ========
 
-Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The official API docs can be found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins)
+Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that
+can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The official API docs can be
+found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins)
 
 ## Installation
 
@@ -30,11 +32,103 @@ board.on('ready', function () {
 });
 ```
 
-Pin numbers are identified by their pin number on the P1 header, so if you want to use GPIO 17, specify pin 11. Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of the P1 header.
+Pin numbers are identified by their pin number on the P1 header, so if you want to use GPIO 17, specify pin 11.
+Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of the P1 header.
 
-In addition to the base requirements specified in the I/O plugin API for Johnny-Five, the following methods are supported: pinMode, digitalRead, and digitalWrite.
+## API
 
-Note: analogRead and analogWrite throw an error if called because the Raspberry Pi does not have proper hardware support for these functions.
+### Static Methods
+
+#### isRaspberryPi _constructor_.isRaspberryPi()```
+
+Returns whether or not the host device is a Raspberry Pi or not. This method only works if you are running Raspbian for now.
+
+### Instance Properties
+
+#### _instance_.MODES
+
+A dictionary containing the pin mode constants ```INPUT```, ```OUTPUT```. ```ANALOG```, ```PWM```, and ```SERVO```.
+Not all pins support all modes.
+
+#### _instance_.HIGH
+
+A constant for logic high
+
+#### _instance_.LOW
+
+A constant for logic low
+
+#### _instance_.defaultLed
+
+A constant that represents the Activity LED on the Raspberry Pi. This constant can be passed as the ```pin``` value to
+```pinMode```, ```digitalWrite```, etc.
+
+#### _instance_.isReady
+
+Indicates if the board is ready for use or not. This value is ```false``` until the ```ready``` event is fired, at which
+point it is set to ```true``` for the remainder of the program's life.
+
+#### _instance_.pins
+
+An array of pin descriptors that corresponds to each pin on the P1 header.
+
+### Pin Descriptors
+
+#### _descriptor_.supportedModes
+
+An array of the modes supported by this pin. Modes are one of the entries in ```MODES```. An empty array means this pin
+is not available for use.
+
+#### _descriptor_.mode
+
+The current mode of the pin, and is one of the entries in ```MODES```. The default is ```INPUT```.
+
+#### _descriptor_.value
+
+The value of the pin, either ```HIGH``` or ```LOW```. If the pin is in ```INPUT``` mode, reading ```value``` will invoke
+a read operation on the pin and give you the current value. If the pin is in ```OUTPUT``` mode, reading ```value``` will
+return the last value written to the pin, or ```LOW``` (the default). Writing to ```value``` in ```OUTPUT``` mode will set
+the value of the pin. Writing to ```value``` when not in ```OUTPUT``` mode will throw an exception.
+
+#### _descriptor_.analogChannel
+
+The corresponding analog channel. This is Arduino specific and is always ```127``` on the Raspberry Pi.
+
+### Instance Methods
+
+#### _instance_.pinMode(pin, mode)
+
+Sets the specified pin's mode. Mode must be one of _instance_.MODES.
+
+#### _instance_.digitalRead(pin, callback)
+
+Starts a read loop on the given pin and calls ```callback``` once every 1ms or so. Calling this method will also cause a
+```data-read-p``` event to be fired, where ```p``` is the pin number. This method should be used with care because it is
+CPU intensive on the Raspberry Pi.
+
+#### _instance_.digitalWrite(pin, value)
+
+Writes the given value to the given pin. Value must be one of ```HIGH``` or ```LOW```. Calling this method when the
+input mode is not ```OUTPUT``` will throw an exception.
+
+#### normalizedPinNumber _instance_.normalize(pin)
+
+Takes a representation of a pin and normalizes it to a pin number. For example, passing ```'GPIO4'``` to ```normalize```
+will return ```7```.
+
+### Instance Events
+
+#### ready
+
+Fired when the board has been initialized and is ready for use. ```ready``` is fired before ```connect```.
+
+#### connect
+
+Fired when the board has been initialized and is ready for use
+
+#### data-read-p
+
+Data is available for reading on the pin number identified by p. This event is only fired if you first call ```digitalRead```.
 
 ## Usage with Johnny-Five
 
@@ -56,9 +150,13 @@ board.on('ready', function() {
 });
 ```
 
-The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged into the Raspberry Pi.
+The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged
+into the Raspberry Pi.
 
-Note: you may also be interested in the [Raspi LLIO](https://gitlab.theoreticalideations.com/nebrius/raspi-llio/tree/master) library, which provides access to more of the Raspberry Pi's peripherals, but is lower-level and a little harder to use.
+## Further Reading
+
+You may also be interested in the [Raspi LLIO](https://gitlab.theoreticalideations.com/nebrius/raspi-llio/tree/master)
+library, which provides access to more of the Raspberry Pi's peripherals, but is lower-level and a little harder to use.
 
 License
 =======
