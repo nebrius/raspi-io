@@ -1,3 +1,8 @@
+## 1.0.0 (2014-08-20)
+
+- Added support for the Raspberry Pi B+
+- Bumped the version to 1.0.0. NO BREAKING API CHANGES, but switching the version to better conform with semver. See https://twitter.com/izs/status/494980144197402625
+
 ## 0.1.14 (2014-07-25)
 
 - Added proper API documentation
