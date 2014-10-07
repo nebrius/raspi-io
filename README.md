@@ -155,7 +155,7 @@ into the Raspberry Pi.
 
 ## Further Reading
 
-You may also be interested in the [Raspi LLIO](https://gitlab.theoreticalideations.com/nebrius/raspi-llio/tree/master)
+You may also be interested in the [Raspi LLIO](https://github.com/bryan-m-hughes/raspi-llio)
 library, which provides access to more of the Raspberry Pi's peripherals, but is lower-level and a little harder to use.
 
 License
