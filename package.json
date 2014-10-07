@@ -5,7 +5,7 @@
   "main": "lib/raspi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bryan-m-hughes/raspi-io"
+    "url": "https://github.com/bryan-m-hughes/raspi-io.git"
   },
   "homepage": "https://github.com/bryan-m-hughes/raspi-io",
   "keywords": [
