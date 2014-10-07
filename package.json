@@ -1,13 +1,13 @@
 {
   "name": "raspi-io",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "lib/raspi",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.theoreticalideations.com/nebrius/raspi-io"
+    "url": "https://github.com/bryan-m-hughes/raspi-io"
   },
-  "homepage": "https://gitlab.theoreticalideations.com/nebrius/raspi-io/tree/master",
+  "homepage": "https://github.com/bryan-m-hughes/raspi-io",
   "keywords": [
     "raspberrypi",
     "nodebots",

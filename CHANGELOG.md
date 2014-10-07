@@ -1,3 +1,7 @@
+## 1.0.1 (2014-10-06)
+
+- Migrated repo to GitHub
+
 ## 1.0.0 (2014-08-20)
 
 - Added support for the Raspberry Pi B+
