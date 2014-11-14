@@ -1,4 +1,8 @@
-## 1.0.1 (2014-10-06)
+## 1.0.3 (2014-11-14)
+
+- Cleaned up the README
+
+## 1.0.1-1.0.2 (2014-10-06)
 
 - Migrated repo to GitHub
 

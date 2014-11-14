@@ -11,6 +11,29 @@ found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-
 npm install raspi-io
 ```
 
+## Usage with Johnny-Five
+
+Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
+
+```JavaScript
+var raspi = require('raspi-io'),
+    five = require('johnny-five'),
+    board = new five.Board({
+      io: new raspi()
+    });
+
+board.on('ready', function() {
+
+  // Create an Led on pin 7 (GPIO4) and strobe it on/off
+  // Optionally set the speed; defaults to 100ms
+  (new five.Led(7)).strobe();
+
+});
+```
+
+The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged
+into the Raspberry Pi.
+
 ## Direct Usage
 
 ```JavaScript
@@ -39,15 +62,19 @@ Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of 
 
 ### Static Methods
 
-#### isRaspberryPi _constructor_.isRaspberryPi()```
+#### bool _constructor_.isRaspberryPi()
 
 Returns whether or not the host device is a Raspberry Pi or not. This method only works if you are running Raspbian for now.
+
+#### instance _constructor_()
+
+Instantiates a new instance of the board and kicks off initialization. The board will not be fully initialized when the constructor returns. Be sure to wait for the ```ready``` event before calling any other methods on the instance.
 
 ### Instance Properties
 
 #### _instance_.MODES
 
-A dictionary containing the pin mode constants ```INPUT```, ```OUTPUT```. ```ANALOG```, ```PWM```, and ```SERVO```.
+A dictionary containing the pin mode constants ```INPUT```, ```OUTPUT```, ```ANALOG```, ```PWM```, and ```SERVO```.
 Not all pins support all modes.
 
 #### _instance_.HIGH
@@ -76,7 +103,7 @@ An array of pin descriptors that corresponds to each pin on the P1 header.
 
 #### _descriptor_.supportedModes
 
-An array of the modes supported by this pin. Modes are one of the entries in ```MODES```. An empty array means this pin
+An array of the modes supported by this pin. Modes are one of the entries in ```MODES```. An empty array means this pin 
 is not available for use.
 
 #### _descriptor_.mode
@@ -100,10 +127,10 @@ The corresponding analog channel. This is Arduino specific and is always ```127`
 
 Sets the specified pin's mode. Mode must be one of _instance_.MODES.
 
-#### _instance_.digitalRead(pin, callback)
+#### _instance_.digitalRead(pin, callback(value))
 
 Starts a read loop on the given pin and calls ```callback``` once every 1ms or so. Calling this method will also cause a
-```data-read-p``` event to be fired, where ```p``` is the pin number. This method should be used with care because it is
+```data-read-[pin]``` event to be fired, where ```[pin]``` is the pin number. This method should be used with care because it is
 CPU intensive on the Raspberry Pi.
 
 #### _instance_.digitalWrite(pin, value)
@@ -111,47 +138,24 @@ CPU intensive on the Raspberry Pi.
 Writes the given value to the given pin. Value must be one of ```HIGH``` or ```LOW```. Calling this method when the
 input mode is not ```OUTPUT``` will throw an exception.
 
-#### normalizedPinNumber _instance_.normalize(pin)
+#### number _instance_.normalize(pin)
 
 Takes a representation of a pin and normalizes it to a pin number. For example, passing ```'GPIO4'``` to ```normalize```
 will return ```7```.
 
 ### Instance Events
 
-#### ready
+#### ready ()
 
 Fired when the board has been initialized and is ready for use. ```ready``` is fired before ```connect```.
 
-#### connect
+#### connect ()
 
 Fired when the board has been initialized and is ready for use
 
-#### data-read-p
+#### data-read-[pin] (value)
 
 Data is available for reading on the pin number identified by p. This event is only fired if you first call ```digitalRead```.
-
-## Usage with Johnny-Five
-
-Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
-
-```JavaScript
-var raspi = require('raspi-io'),
-    five = require('johnny-five'),
-    board = new five.Board({
-      io: new raspi()
-    });
-
-board.on('ready', function() {
-
-  // Create an Led on pin 7 (GPIO4) and strobe it on/off
-  // Optionally set the speed; defaults to 100ms
-  (new five.Led(7)).strobe();
-
-});
-```
-
-The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged
-into the Raspberry Pi.
 
 ## Further Reading
 
