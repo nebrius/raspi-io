@@ -23,30 +23,174 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var fs = require('fs');
-var Emitter = require('events').EventEmitter;
-var GPIO = require('./gpio');
-var Board = require('./board');
-var async = require('async');
+import fs from 'fs';
+import events from 'events';
+import { init } from 'raspi-core';
+import { getPins, getPinNumber } from 'raspi-board';
+import { DigitalOutput, DigitalInput } from 'raspi-gpio';
+import { PWM } from 'raspi-pwm';
 
-  // Check for root access
-  if (process.env.USER != 'root') {
-    console.warn('WARNING: Raspi-IO usually needs to be run with root privileges to access hardware, but it doesn\'t appear to by running as root');
+// Check for root access
+if (process.env.USER != 'root') {
+  console.warn('WARNING: Raspi-IO usually needs to be run with root privileges to access hardware, but it doesn\'t appear to be running as root currently');
+}
+
+// Constants
+var INPUT = 0;
+var OUTPUT = 1;
+var ANALOG = 2;
+var PWM = 3;
+var SERVO = 4;
+
+var LOW = 0;
+var HIGH = 1;
+
+var LED = 'led0';
+
+// Hacky but fast emulation of symbols, eliminating the need for $traceurRuntime.toProperty calls
+var isReady = '__r$271828_0$__';
+var pins = '__r$271828_1$__';
+var instances = '__r$271828_2$__';
+var analogPins = '__r$271828_3$__';
+var mode = '__$271828_4$__';
+
+class Raspi extends events.EventEmitter {
+
+  constructor() {
+    super();
+
+    Object.defineProperties(this, {
+      name: {
+        enumerable: true,
+        value: 'RaspberryPi-IO'
+      },
+
+      [instances]: {
+        writable: true,
+        value: []
+      },
+
+      [isReady]: {
+        writable: true,
+        value: false
+      },
+      isReady: {
+        enumerable: true,
+        get: () => {
+          return this[isReady];
+        }
+      },
+
+      [pins]: {
+        writable: true,
+        value: []
+      },
+      pins: {
+        enumerable: true,
+        get: () => {
+          return this[pins];
+        }
+      },
+
+      [analogPins]: {
+        writable: true,
+        value: []
+      },
+      analogPins: {
+        enumerable: true,
+        get: () => {
+          return this[analogPins];
+        }
+      },
+
+      MODES: {
+        enumerable: true,
+        value: Object.freeze({
+          INPUT: INPUT,
+          OUTPUT: OUTPUT,
+          ANALOG: ANALOG,
+          PWM: PWM,
+          SERVO: SERVO
+        })
+      },
+
+      HIGH: {
+        enumerable: true,
+        value: HIGH
+      },
+      LOW: {
+        enumerable: true,
+        value: LOW
+      },
+
+      defaultLed: {
+        enumerable: true,
+        value: LED
+      }
+    });
+
+    init(() => {
+      var pinMappings = getPins();
+      this[pins] = (Object.keys(pinMappings).map((pin) => {
+        pin = pinMappings[pin];
+        var supportedModes = [ INPUT, OUTPUT ];
+        if (pin.peripherals.indexOf('pwm') != -1) {
+          supportedModes.push(PWM, SERVO);
+        }
+        var value = (this[instances][pin] = new DigitalInput(pin)).read();
+        return Object.create(null, {
+          supportedModes: {
+            enumerable: true,
+            value: Object.freeze(supportedModes)
+          },
+          mode: {
+            enumerable: true,
+            value: INPUT
+          },
+          value: {
+            enumerable: true,
+            value: value
+          },
+          report: {
+            enumerable: true,
+            value: 1
+          },
+          analogChannel: {
+            enumerable: true,
+            value: 127
+          }
+        });
+      }));
+      this.emit('ready');
+      this.emit('connect');
+    });
   }
 
-function Raspi() {
-  if (!(this instanceof Raspi)) {
-    return new Raspi();
+  reset() {
+    throw 'reset is not yet implemented.';
   }
 
-  Emitter.call(this);
+  normalize(pin) {
+    return getPinNumber(pin);
+  }
+}
 
-  // Initialize the board properties
-  this.name = 'RaspberryPi-IO';
-  this.isReady = false;
-  this.pins = [];
-  this.analogPins = [];
+Object.defineProperty(Raspi, 'isRaspberryPi', {
+  enumerable: true,
+  value: () => {
+    // Determining if a system is a Raspberry Pi isn't possible through
+    // the os module on Raspbian, so we read it from the file system instead
+    var isRaspberryPi = false;
+    try {
+      isRaspberryPi = fs.readFileSync('/etc/os-release').toString().indexOf('Raspbian') !== -1;
+    } catch(e) {}// Squash file not found, etc errors
+    return isRaspberryPi;
+  }
+});
 
+module.exports = Raspi;
+
+/*function Raspi() {
   // Initialize the GPIO pins
   Board.getBoardPins((function (err, pins, pinAliases) {
     if (err) {
@@ -102,24 +246,6 @@ Raspi.isRaspberryPi = function () {
   } catch(e) {}// Squash file not found, etc errors
   return isRaspberryPi;
 };
-
-Raspi.prototype = Object.create(Emitter.prototype, {
-  constructor: {
-    value: Raspi
-  },
-  MODES: {
-    value: Board.modes
-  },
-  HIGH: {
-    value: 1
-  },
-  LOW: {
-    value: 0
-  },
-  defaultLed: {
-    value: 'led0'
-  }
-});
 
 Raspi.prototype.normalize = function(alias) {
   return this._pinAliases[alias.toString().toUpperCase()] || alias;
@@ -191,4 +317,4 @@ Raspi.prototype.analogWrite = function() {
   };
 });
 
-module.exports = Raspi;
+module.exports = Raspi;*/
