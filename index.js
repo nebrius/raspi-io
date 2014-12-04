@@ -36,16 +36,21 @@ if (process.env.USER != 'root') {
 }
 
 // Constants
-var INPUT = 0;
-var OUTPUT = 1;
-var ANALOG = 2;
-var PWM = 3;
-var SERVO = 4;
+var INPUT_MODE = 0;
+var OUTPUT_MODE = 1;
+var ANALOG_MODE = 2;
+var PWM_MODE = 3;
+var SERVO_MODE = 4;
+var UNKNOWN_MODE = 99;
 
 var LOW = 0;
 var HIGH = 1;
 
 var LED = 'led0';
+
+// Settings
+
+var DIGITAL_READ_UPDATE_RATE = 19;
 
 // Hacky but fast emulation of symbols, eliminating the need for $traceurRuntime.toProperty calls
 var isReady = '__r$271828_0$__';
@@ -53,6 +58,7 @@ var pins = '__r$271828_1$__';
 var instances = '__r$271828_2$__';
 var analogPins = '__r$271828_3$__';
 var mode = '__$271828_4$__';
+var getPinInstance = '__$271828_5$__';
 
 class Raspi extends events.EventEmitter {
 
@@ -76,7 +82,7 @@ class Raspi extends events.EventEmitter {
       },
       isReady: {
         enumerable: true,
-        get: () => {
+        get() {
           return this[isReady];
         }
       },
@@ -87,7 +93,7 @@ class Raspi extends events.EventEmitter {
       },
       pins: {
         enumerable: true,
-        get: () => {
+        get() {
           return this[pins];
         }
       },
@@ -98,7 +104,7 @@ class Raspi extends events.EventEmitter {
       },
       analogPins: {
         enumerable: true,
-        get: () => {
+        get() {
           return this[analogPins];
         }
       },
@@ -106,11 +112,11 @@ class Raspi extends events.EventEmitter {
       MODES: {
         enumerable: true,
         value: Object.freeze({
-          INPUT: INPUT,
-          OUTPUT: OUTPUT,
-          ANALOG: ANALOG,
-          PWM: PWM,
-          SERVO: SERVO
+          INPUT: INPUT_MODE,
+          OUTPUT: OUTPUT_MODE,
+          ANALOG: ANALOG_MODE,
+          PWM: PWM_MODE,
+          SERVO: SERVO_MODE
         })
       },
 
@@ -133,11 +139,15 @@ class Raspi extends events.EventEmitter {
       var pinMappings = getPins();
       this[pins] = (Object.keys(pinMappings).map((pin) => {
         pin = pinMappings[pin];
-        var supportedModes = [ INPUT, OUTPUT ];
+        var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
         if (pin.peripherals.indexOf('pwm') != -1) {
-          supportedModes.push(PWM, SERVO);
+          supportedModes.push(PWM_MODE, SERVO_MODE);
         }
-        var value = (this[instances][pin] = new DigitalInput(pin)).read();
+        var instance = this[instances][pin] = {
+          peripheral: new DigitalInput(pin),
+          mode: INPUT_MODE,
+          previousWrittenValue: LOW
+        };
         return Object.create(null, {
           supportedModes: {
             enumerable: true,
@@ -145,11 +155,30 @@ class Raspi extends events.EventEmitter {
           },
           mode: {
             enumerable: true,
-            value: INPUT
+            value: {
+              get() {
+                return instance.mode;
+              }
+            }
           },
           value: {
             enumerable: true,
-            value: value
+            get() {
+              switch(instance.mode) {
+                case INPUT_MODE:
+                  return instance.peripheral.read();
+                  break;
+                case OUTPUT_MODE:
+                  return instance.previousWrittenValue;
+                  break;
+              }
+            },
+            set(value) {
+              if (instance.mode == OUTPUT_MODE && value != instance.previousWrittenValue) {
+                instance.peripheral.write(value);
+                instance.previousWrittenValue = value;
+              }
+            }
           },
           report: {
             enumerable: true,
@@ -161,17 +190,169 @@ class Raspi extends events.EventEmitter {
           }
         });
       }));
+
+      this.isReady = true;
       this.emit('ready');
       this.emit('connect');
     });
   }
 
   reset() {
-    throw 'reset is not yet implemented.';
+    throw 'reset is not supported on the Raspberry Pi';
   }
 
   normalize(pin) {
     return getPinNumber(pin);
+  }
+
+  [getPinInstance](pin) {
+    var pinInstance = this[instances][pin];
+    if (!pinInstance) {
+      throw new Error('Unknown pin "' + pin + '"');
+    }
+    return pinInstance;
+  }
+
+  pinMode(pin, mode) {
+    var pinInstance = this[getPinInstance](pin);
+    if (this[pins][pin].supportedModes.indexOf(mode) == -1) {
+      throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
+    }
+    switch(mode) {
+      case INPUT_MODE:
+        pinInstance.peripheral = new DigitalInput(pin);
+        break;
+      case OUTPUT_MODE:
+        pinInstance.peripheral = new DigitalOutput(pin);
+        break;
+      case PWM_MODE:
+      case SERVO_MODE:
+        pinInstance.peripheral = new PWM(pin);
+        break;
+    }
+  }
+
+  analogRead(pin, handler) {
+    throw new Error('analogRead is not supported on the Raspberry Pi');
+  }
+
+  analogWrite(pin, value) {
+    var pinInstance = this[getPinInstance](pin);
+    if (pinInstance.mode != PWM_MODE) {
+      throw new Error('Cannot analogWrite to pin "' + pin + '" unless it is in PWM mode');
+    }
+    pinInstance.peripheral.write(Math.round(value * 1024 / 255));
+  }
+
+  digitalRead(pin, handler) {
+    var pinInstance = this[getPinInstance](pin);
+    if (pinInstance.mode != INPUT_MODE) {
+      throw new Error('Cannot digitalRead from pin "' + pin + '" unless it is in INPUT mode');
+    }
+    var interval = setInterval(() => {
+      var value = pinInstance.peripheral.read();
+      handler && handler(value);
+      this.emit('digital-read-' + pin, value);
+    }, DIGITAL_READ_UPDATE_RATE);
+    pinInstance.peripheral.on('destroyed', () => {
+      clearInterval(interval);
+    });
+  }
+
+  digitalWrite(pin, value) {
+    var pinInstance = this[getPinInstance](pin);
+    if (pinInstance.mode != OUTPUT_MODE) {
+      throw new Error('Cannot digitalWrite to pin "' + pin + '" unless it is in OUTPUT mode');
+    }
+    pinInstance.peripheral.write(value ? HIGH : LOW);
+  }
+
+  servoWrite(pin, value) {
+    var pinInstance = this[getPinInstance](pin);
+    if (pinInstance.mode != SERVO_MODE) {
+      throw new Error('Cannot servoWrite to pin "' + pin + '" unless it is in PWM mode');
+    }
+    pinInstance.peripheral.write(Math.round(value * 1024 / 255));
+  }
+
+  queryCapabilities() {
+    throw 'queryCapabilities is not yet implemented';
+  }
+
+  queryAnalogMapping() {
+    throw 'queryAnalogMapping is not yet implemented';
+  }
+
+  queryPinState() {
+    throw 'queryPinState is not yet implemented';
+  }
+
+  sendI2CConfig() {
+    throw 'sendI2CConfig is not yet implemented';
+  }
+
+  sendI2CWriteRequest() {
+    throw 'sendI2CWriteRequest is not yet implemented';
+  }
+
+  sendI2CReadRequest() {
+    throw 'sendI2CReadRequest is not yet implemented';
+  }
+
+  setSamplingInterval() {
+    throw 'setSamplingInterval is not yet implemented';
+  }
+
+  reportAnalogPin() {
+    throw 'reportAnalogPin is not yet implemented';
+  }
+
+  reportDigitalPin() {
+    throw 'reportDigitalPin is not yet implemented';
+  }
+
+  pulseIn() {
+    throw 'pulseIn is not yet implemented';
+  }
+
+  stepperConfig() {
+    throw 'stepperConfig is not yet implemented';
+  }
+
+  stepperStep() {
+    throw 'stepperStep is not yet implemented';
+  }
+
+  sendOneWireConfig() {
+    throw 'sendOneWireConfig is not yet implemented';
+  }
+
+  sendOneWireSearch() {
+    throw 'sendOneWireSearch is not yet implemented';
+  }
+
+  sendOneWireAlarmsSearch() {
+    throw 'sendOneWireAlarmsSearch is not yet implemented';
+  }
+
+  sendOneWireRead() {
+    throw 'sendOneWireRead is not yet implemented';
+  }
+
+  sendOneWireReset() {
+    throw 'sendOneWireReset is not yet implemented';
+  }
+
+  sendOneWireWrite() {
+    throw 'sendOneWireWrite is not yet implemented';
+  }
+
+  sendOneWireDelay() {
+    throw 'sendOneWireDelay is not yet implemented';
+  }
+
+  sendOneWireWriteAndRead() {
+    throw 'sendOneWireWriteAndRead is not yet implemented';
   }
 }
 
@@ -189,132 +370,3 @@ Object.defineProperty(Raspi, 'isRaspberryPi', {
 });
 
 module.exports = Raspi;
-
-/*function Raspi() {
-  // Initialize the GPIO pins
-  Board.getBoardPins((function (err, pins, pinAliases) {
-    if (err) {
-      console.error('Could not initialize board: ' + err);
-      return;
-    }
-    this.pins = pins;
-    this._pinAliases = pinAliases;
-
-    // Helper method to initialize a pin instance
-    var createPinInitializer = (function createPinInitializer(descriptor) {
-      return (function(next) {
-        (descriptor._instance = new GPIO(descriptor._gpio)).init(function(err) {
-          if (err) {
-            next('Could not initialize GPIO ' + descriptor._gpio + ': ' + err);
-          } else {
-            next();
-          }
-        }, this);
-      }).bind(this);
-    }).bind(this);
-
-    // Initialize the pins
-    var tasks = [];
-    for (var i = 0, len = pins.length; i < len; i++) {
-      if (pins[i].supportedModes.length) {
-        tasks.push(createPinInitializer(pins[i]));
-      }
-    }
-    async.parallel(tasks, (function(err) {
-      if (err) {
-        console.error('Could not initialize GPIO pins: ' + err);
-        return;
-      }
-      this.isReady = true;
-      this.emit('ready');
-      this.emit('connect');
-    }).bind(this));
-  }).bind(this));
-}
-Raspi.prototype = new Emitter();
-
-Raspi.reset = function() {
-  throw 'reset is not yet implemented.';
-};
-
-Raspi.isRaspberryPi = function () {
-  // Determining if a system is a Raspberry Pi isn't possible through
-  // the os module on Raspbian, so we read it from the file system instead
-  var isRaspberryPi = false;
-  try {
-    isRaspberryPi = fs.readFileSync('/etc/os-release').toString().indexOf('Raspbian') !== -1;
-  } catch(e) {}// Squash file not found, etc errors
-  return isRaspberryPi;
-};
-
-Raspi.prototype.normalize = function(alias) {
-  return this._pinAliases[alias.toString().toUpperCase()] || alias;
-};
-
-Raspi.prototype.pinMode = function(pin, mode) {
-  var pinInstance = this.pins[pin];
-  if (!pinInstance) {
-    throw new Error('Invalid pin "' + pin + '"');
-  } else if (pinInstance.supportedModes.indexOf(mode) == -1) {
-    throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
-  }
-
-  // For now we only support GPIO, aka INPUT and OUTPUT. This will need to be refactored
-  // later once other types of modes are supported
-  pinInstance.mode = mode;
-  pinInstance._instance.setDirectionSync(mode == Board.modes.OUTPUT ? 'out' : 'in');
-};
-
-Raspi.prototype.digitalRead = function(pin, handler) {
-  var pinInstance = this.pins[pin];
-  if (!pinInstance) {
-    throw new Error('Invalid pin "' + pin + '"');
-  }
-  pinInstance._instance.watchValue(handler);
-};
-
-Raspi.prototype.digitalWrite = function(pin, value) {
-  var pinInstance = this.pins[pin];
-  if (!pinInstance) {
-    throw new Error('Invalid pin "' + pin + '"');
-  } else if (pinInstance.mode !== Board.modes.OUTPUT) {
-    throw new Error('Cannot write to pin "' + pin + '" because it is not in output mode');
-  }
-  pinInstance._instance.writeValueSync(value);
-};
-
-Raspi.prototype.analogRead = function() {
-  throw new Error('Analog read is not supported on the Raspberry Pi');
-};
-
-Raspi.prototype.analogWrite = function() {
-  throw new Error('Analog write is not supported on the Raspberry Pi');
-};
-
-[
-  'servoWrite',
-  'pulseIn',
-  'pulseOut',
-  'queryPinState',
-  'sendI2CWriteRequest',
-  'sendI2CReadRequest',
-  'sendI2CConfig',
-  '_sendOneWireRequest',
-  '_sendOneWireSearch',
-  'sendOneWireWriteAndRead',
-  'sendOneWireDelay',
-  'sendOneWireDelay',
-  'sendOneWireReset',
-  'sendOneWireRead',
-  'sendOneWireSearch',
-  'sendOneWireAlarmsSearch',
-  'sendOneWireConfig',
-  'stepperConfig',
-  'stepperStep'
-].forEach(function(method) {
-  Raspi.prototype[method] = function() {
-    throw method + ' is not yet implemented.';
-  };
-});
-
-module.exports = Raspi;*/
