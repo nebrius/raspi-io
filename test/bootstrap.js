@@ -29,30 +29,9 @@ var pollInterval = setInterval(function () {
   if (process.stdin.read() !== null) {
     clearInterval(pollInterval);
     startTime = Date.now();
-    runGPIOTests();
+    runRaspiTests();
   }
 }, 10);
-
-function runGPIOTests() {
-  console.log('Running GPIO tests');
-  var gpioTestProcess = fork(path.join(__dirname, 'gpio'), [ '--managed' ]);
-  gpioTestProcess.on('message', function (results) {
-    var numPassed = results.numPassed;
-    var numFailed = results.numFailed;
-    if (numPassed && numFailed) {
-        console.log('\n' + numPassed + ' tests passed and ' + numFailed + ' tests failed\n');
-      } else if (numPassed) {
-        console.log('\n' + numPassed + ' tests passed\n');
-      } else if (numFailed) {
-        console.log('\n' + numFailed + ' tests failed\n');
-      } else {
-        console.log('\nNo tests finished\n');
-      }
-  });
-  gpioTestProcess.on('exit', function () {
-    runRaspiTests();
-  });
-}
 
 function runRaspiTests() {
   console.log('\nRunning Raspi-IO tests');

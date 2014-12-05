@@ -155,10 +155,8 @@ class Raspi extends events.EventEmitter {
           },
           mode: {
             enumerable: true,
-            value: {
-              get() {
-                return instance.mode;
-              }
+            get() {
+              return instance.mode;
             }
           },
           value: {
@@ -174,9 +172,8 @@ class Raspi extends events.EventEmitter {
               }
             },
             set(value) {
-              if (instance.mode == OUTPUT_MODE && value != instance.previousWrittenValue) {
+              if (instance.mode == OUTPUT_MODE) {
                 instance.peripheral.write(value);
-                instance.previousWrittenValue = value;
               }
             }
           },
@@ -265,7 +262,10 @@ class Raspi extends events.EventEmitter {
     if (pinInstance.mode != OUTPUT_MODE) {
       throw new Error('Cannot digitalWrite to pin "' + pin + '" unless it is in OUTPUT mode');
     }
-    pinInstance.peripheral.write(value ? HIGH : LOW);
+    if (value != pinInstance.previousWrittenValue) {
+      pinInstance.peripheral.write(value ? HIGH : LOW);
+      pinInstance.previousWrittenValue = value;
+    }
   }
 
   servoWrite(pin, value) {

@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-var Raspi = require('../lib/raspi');
+var Raspi = require('../lib/index.js');
 var numPassed = 0;
 var numFailed = 0;
 var isManaged = process.argv[2] == '--managed';
@@ -62,12 +62,10 @@ function runTests() {
 function testRaspi(cb) {
   var board = new Raspi();
   board.on('ready', function () {
-    board.pinMode(7, board.MODES.OUTPUT);
-    board.pinMode(11, board.MODES.INPUT);
-
-    board.digitalWrite(7, 1);
-    process.stdout.write('Writing 1 to pin 7 and reading it back on pin 11...');
-    if (board.pins[11].value !== 1) {
+    process.stdout.write('Normalizing pins P1-7 and P1-11...');
+    var pin7 = board.normalize('P1-7');
+    var pin11 = board.normalize('P1-11');
+    if (pin7 !== 7 || pin11 !== 0) {
       numFailed++;
       process.stdout.write('Failed\n');
     } else {
@@ -75,9 +73,30 @@ function testRaspi(cb) {
       process.stdout.write('Passed\n');
     }
 
-    board.pins[7].value = 0;
+    process.stdout.write('Setting pin 7 to OUTPUT and pin 11 to INPUT...');
+    board.pinMode(pin7, board.MODES.OUTPUT);
+    board.pinMode(pin11, board.MODES.INPUT);
+    if (board.pins[pin7].mode !== board.MODES.OUTPUT || board.pins[pin11].mode !== board.MODES.INPUT) {
+      numFailed++;
+      process.stdout.write('Failed\n');
+    } else {
+      numPassed++;
+      process.stdout.write('Passed\n');
+    }
+
+    process.stdout.write('Writing 1 to pin 7 and reading it back on pin 11...');
+    board.digitalWrite(pin7, 1);
+    if (board.pins[pin11].value !== 1) {
+      numFailed++;
+      process.stdout.write('Failed\n');
+    } else {
+      numPassed++;
+      process.stdout.write('Passed\n');
+    }
+
     process.stdout.write('Writing 0 to pin 7 and reading it back on pin 11...');
-    if (board.pins[11].value !== 0) {
+    board.pins[pin7].value = 0;
+    if (board.pins[pin11].value !== 0) {
       numFailed++;
       process.stdout.write('Failed\n');
     } else {
@@ -89,7 +108,7 @@ function testRaspi(cb) {
     var testFailed = false;
     var lastToggled = Date.now();
     process.stdout.write('Continuously reading pin 11 and toggling it from pin 7...');
-    board.digitalRead(11, function (readValue) {
+    board.digitalRead(pin11, function (readValue) {
       // Due to the asynchronous nature of watching, this test inherently has a
       // race condition in it, so we need to ignore the time right after setting
       // to allow read loop to get back in sync
