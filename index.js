@@ -138,9 +138,9 @@ class Raspi extends events.EventEmitter {
     init(() => {
       var pinMappings = getPins();
       this[pins] = (Object.keys(pinMappings).map((pin) => {
-        pin = pinMappings[pin];
+        var pinInfo = pinMappings[pin];
         var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
-        if (pin.peripherals.indexOf('pwm') != -1) {
+        if (pinInfo.peripherals.indexOf('pwm') != -1) {
           supportedModes.push(PWM_MODE, SERVO_MODE);
         }
         var instance = this[instances][pin] = {
@@ -191,7 +191,7 @@ class Raspi extends events.EventEmitter {
         });
       }));
 
-      this.isReady = true;
+      this[isReady] = true;
       this.emit('ready');
       this.emit('connect');
     });
@@ -230,6 +230,7 @@ class Raspi extends events.EventEmitter {
         pinInstance.peripheral = new PWM(pin);
         break;
     }
+    pinInstance.mode = mode;
   }
 
   analogRead(pin, handler) {
