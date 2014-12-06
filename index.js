@@ -239,7 +239,7 @@ class Raspi extends events.EventEmitter {
     if (pinInstance.mode != PWM_MODE) {
       throw new Error('Cannot analogWrite to pin "' + pin + '" unless it is in PWM mode');
     }
-    pinInstance.peripheral.write(Math.round(value * 1024 / 255));
+    pinInstance.peripheral.write(Math.round(value * 1000 / 255));
   }
 
   digitalRead(pin, handler) {
@@ -273,7 +273,7 @@ class Raspi extends events.EventEmitter {
     if (pinInstance.mode != SERVO_MODE) {
       throw new Error('Cannot servoWrite to pin "' + pin + '" unless it is in PWM mode');
     }
-    pinInstance.peripheral.write(Math.round(value * 1024 / 255));
+    pinInstance.peripheral.write(48 + Math.round(value * 48/ 180));
   }
 
   queryCapabilities() {

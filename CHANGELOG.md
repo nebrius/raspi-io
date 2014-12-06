@@ -1,3 +1,9 @@
+## 2.0.0 (2014-12-6)
+
+- Total rewrite! Now uses wiringPi under the hood
+- PWM support included
+- New pin mapping scheme, see README
+
 ## 1.0.3 (2014-11-14)
 
 - Cleaned up the README

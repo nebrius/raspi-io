@@ -16,23 +16,22 @@ npm install raspi-io
 Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
 
 ```JavaScript
-var raspi = require('raspi-io'),
-    five = require('johnny-five'),
-    board = new five.Board({
-      io: new raspi()
-    });
+var raspi = require('raspi-io');
+var five = require('johnny-five');
+var board = new five.Board({
+  io: new raspi()
+});
 
 board.on('ready', function() {
 
   // Create an Led on pin 7 (GPIO4) and strobe it on/off
   // Optionally set the speed; defaults to 100ms
-  (new five.Led(7)).strobe();
+  (new five.Led('P1-7')).strobe();
 
 });
 ```
 
-The ```io``` property must be specified explicitly to differentiate from trying to control an Arduino Uno that is plugged
-into the Raspberry Pi.
+The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not just ```7```. See the section on pins below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
 ## Direct Usage
 
@@ -44,19 +43,23 @@ var board = new raspi();
 board.on('ready', function () {
 
   // Set pin 7 (GPIO 4) as an output
-  board.pinMode(7, board.MODES.OUTPUT);
+  board.pinMode('P1-7', board.MODES.OUTPUT);
 
   // Set pin 7's output to logic high
-  board.pins[7].value = board.HIGH;
+  board.pins[board.normalize('P1-7')].value = board.HIGH;
 
   // Read a pin value
-  console.log(board.pins[7].value); // outputs "1"
+  console.log(board.pins[board.normalize('P1-7')].value); // outputs "1"
 
 });
 ```
 
 Pin numbers are identified by their pin number on the P1 header, so if you want to use GPIO 17, specify pin 11.
 Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of the P1 header.
+
+## Pin Mapping
+
+The pins on the Raspberry Pi are a little complication. There are multiple headers on some Raspberry Pis with extra pins, and the pin numbers are not consistent between versions. To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. ```'GPIO18'```. The second way is to specify by pin number, which is specified in the form "P<header>-<pin>", e.g. ```'P1-7'```. The final way is specify the [Wiring Pi pin number](http://wiringpi.com/pins/), e.g. ```7```. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
 
 ## API
 
@@ -135,8 +138,16 @@ CPU intensive on the Raspberry Pi.
 
 #### _instance_.digitalWrite(pin, value)
 
-Writes the given value to the given pin. Value must be one of ```HIGH``` or ```LOW```. Calling this method when the
-input mode is not ```OUTPUT``` will throw an exception.
+Writes the given value to the given pin. Value must be one of ```HIGH``` or ```LOW```. Calling this method when the pin mode is not ```OUTPUT``` will throw an exception.
+
+#### _instance_.analogWrite(pin, value)
+
+Writes the given analog value to the given pin, in the form of a PWM. Values must be between 0 and 255. Calling this
+method when the pin mode is not ```PWM``` or ```SERVO``` will throw an exception.
+
+#### _instance_.servoWrite(pin, value)
+
+Same as ```analogWrite```.
 
 #### number _instance_.normalize(pin)
 
@@ -156,11 +167,6 @@ Fired when the board has been initialized and is ready for use
 #### data-read-[pin] (value)
 
 Data is available for reading on the pin number identified by p. This event is only fired if you first call ```digitalRead```.
-
-## Further Reading
-
-You may also be interested in the [Raspi LLIO](https://github.com/bryan-m-hughes/raspi-llio)
-library, which provides access to more of the Raspberry Pi's peripherals, but is lower-level and a little harder to use.
 
 License
 =======
