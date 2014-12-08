@@ -1,8 +1,12 @@
+## 2.0.1 (2014-12-8)
+
+- Added support for the capability queries
+
 ## 2.0.0 (2014-12-6)
 
 - Total rewrite! Now uses wiringPi under the hood
 - PWM support included
-- New pin mapping scheme, see README
+- New pin mapping scheme, see README. The pin numbering scheme has CHANGED!
 
 ## 1.0.3 (2014-11-14)
 

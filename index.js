@@ -276,16 +276,28 @@ class Raspi extends events.EventEmitter {
     pinInstance.peripheral.write(48 + Math.round(value * 48/ 180));
   }
 
-  queryCapabilities() {
-    throw 'queryCapabilities is not yet implemented';
+  queryCapabilities(cb) {
+    if (this.isReady) {
+      process.nextTick(cb);
+    } else {
+      this.on('ready', cb);
+    }
   }
 
-  queryAnalogMapping() {
-    throw 'queryAnalogMapping is not yet implemented';
+  queryAnalogMapping(cb) {
+    if (this.isReady) {
+      process.nextTick(cb);
+    } else {
+      this.on('ready', cb);
+    }
   }
 
-  queryPinState() {
-    throw 'queryPinState is not yet implemented';
+  queryPinState(pin, cb) {
+    if (this.isReady) {
+      process.nextTick(cb);
+    } else {
+      this.on('ready', cb);
+    }
   }
 
   sendI2CConfig() {
