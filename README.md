@@ -1,6 +1,8 @@
 Raspi-io
 ========
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bryan-m-hughes/raspi-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that
 can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be
 found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, and Model B+.
