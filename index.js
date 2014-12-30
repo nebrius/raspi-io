@@ -199,7 +199,11 @@ class Raspi extends events.EventEmitter {
   }
 
   normalize(pin) {
-    return getPinNumber(pin);
+    var normalizedPin = getPinNumber(pin);
+    if (typeof normalizedPin == 'undefined') {
+      throw new Error('Unknown pin "' + pin + '"');
+    }
+    return normalizedPin;
   }
 
   [getPinInstance](pin) {

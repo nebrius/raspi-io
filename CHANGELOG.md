@@ -1,3 +1,7 @@
+## 2.0.2 (2014-2-30)
+
+- Added error checking to the ```normalize``` method to make exceptions more readable
+
 ## 2.0.1 (2014-12-8)
 
 - Added support for the capability queries
