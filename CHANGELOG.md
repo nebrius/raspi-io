@@ -1,3 +1,7 @@
+## 2.0.3 (2015-1-7)
+
+- Fixed a bug with mode checking in digitalRead
+
 ## 2.0.2 (2014-2-30)
 
 - Added error checking to the ```normalize``` method to make exceptions more readable
