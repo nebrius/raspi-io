@@ -1,3 +1,7 @@
+## 2.0.4 (2015-2-8)
+
+- Relaxed restrictions on calling methods with mismatched modes.
+
 ## 2.0.3 (2015-1-7)
 
 - Fixed a bug with mode checking in digitalRead
