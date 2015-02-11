@@ -5,7 +5,7 @@ Raspi-io
 
 Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that
 can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be
-found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, and Model B+, but does _not_ support the Model A.
+found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, and Model B+, but does _not_ support the Model A. Raspberry Pi 2 support coming soon, stay tuned!
 
 ## Installation
 
@@ -13,7 +13,7 @@ found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-
 npm install raspi-io
 ```
 
-## Usage with Johnny-Five
+## Usage
 
 Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
 
@@ -35,33 +35,11 @@ board.on('ready', function() {
 
 The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not just ```7```. See the section on pins below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
-## Direct Usage
-
-```JavaScript
-var raspi = require('raspi-io');
-var board = new raspi();
-
-// Initialize the board
-board.on('ready', function () {
-
-  // Set pin 7 (GPIO 4) as an output
-  board.pinMode('P1-7', board.MODES.OUTPUT);
-
-  // Set pin 7's output to logic high
-  board.pins[board.normalize('P1-7')].value = board.HIGH;
-
-  // Read a pin value
-  console.log(board.pins[board.normalize('P1-7')].value); // outputs "1"
-
-});
-```
-
-Pin numbers are identified by their pin number on the P1 header, so if you want to use GPIO 17, specify pin 11.
-Read [here](http://elinux.org/Rpi_Low-level_peripherals) for the full pinout of the P1 header.
+Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/bryan-m-hughes/raspi), which underpins this library and is a little more straightforward to use.
 
 ## Pin Naming
 
-The pins on the Raspberry Pi are a little complication. There are multiple headers on some Raspberry Pis with extra pins, and the pin numbers are not consistent between versions.
+The pins on the Raspberry Pi are a little complicated. There are multiple headers on some Raspberry Pis with extra pins, and the pin numbers are not consistent between Raspberry Pi board versions.
 
 To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. ```'GPIO18'```. The second way is to specify by pin number, which is specified in the form "P<header>-<pin>", e.g. ```'P1-7'```. The final way is specify the [Wiring Pi virtual pin number](http://wiringpi.com/pins/), e.g. ```7```. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
 

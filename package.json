@@ -1,6 +1,6 @@
 {
   "name": "raspi-io",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "lib/index.js",
   "repository": {
@@ -14,8 +14,8 @@
     "robots"
   ],
   "dependencies": {
+    "raspi": "^1.1.6",
     "raspi-board": "^1.2.2",
-    "raspi-core": "^1.1.4",
     "raspi-gpio": "^1.0.3",
     "raspi-pwm": "^1.0.3"
   },

@@ -25,15 +25,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import fs from 'fs';
 import events from 'events';
-import { init } from 'raspi-core';
+import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
-
-// Check for root access
-if (process.env.USER != 'root') {
-  console.warn('WARNING: Raspi-IO usually needs to be run with root privileges to access hardware, but it doesn\'t appear to be running as root currently');
-}
 
 // Constants
 var INPUT_MODE = 0;

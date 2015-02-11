@@ -1,3 +1,8 @@
+## 2.0.5 (2015-2-11)
+
+- Refactored raspi-core usage to match the new name
+- README updates
+
 ## 2.0.4 (2015-2-8)
 
 - Relaxed restrictions on calling methods with mismatched modes.
