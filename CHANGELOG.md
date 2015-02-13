@@ -1,3 +1,7 @@
+## 2.0.6 (2015-2-12)
+
+- Fixed a bug with pin numbering on the B+/A+
+
 ## 2.0.5 (2015-2-11)
 
 - Refactored raspi-core usage to match the new name

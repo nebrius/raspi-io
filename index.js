@@ -132,7 +132,8 @@ class Raspi extends events.EventEmitter {
 
     init(() => {
       var pinMappings = getPins();
-      this[pins] = (Object.keys(pinMappings).map((pin) => {
+      this[pins] = [];
+      for (var pin of Object.keys(pinMappings)) {
         var pinInfo = pinMappings[pin];
         var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
         if (pinInfo.peripherals.indexOf('pwm') != -1) {
@@ -143,7 +144,7 @@ class Raspi extends events.EventEmitter {
           mode: INPUT_MODE,
           previousWrittenValue: LOW
         };
-        return Object.create(null, {
+        this[pins][pin] = Object.create(null, {
           supportedModes: {
             enumerable: true,
             value: Object.freeze(supportedModes)
@@ -181,7 +182,40 @@ class Raspi extends events.EventEmitter {
             value: 127
           }
         });
-      }));
+      }
+
+      // Fill in the holes
+      for (var i = 0; i < this[pins].length; i++) {
+        if (!this[pins][i]) {
+          this[pins][i] = Object.create(null, {
+            supportedModes: {
+              enumerable: true,
+              value: Object.freeze([])
+            },
+            mode: {
+              enumerable: true,
+              get() {
+                return UNKNOWN_MODE;
+              }
+            },
+            value: {
+              enumerable: true,
+              get() {
+                return 0;
+              },
+              set() {}
+            },
+            report: {
+              enumerable: true,
+              value: 1
+            },
+            analogChannel: {
+              enumerable: true,
+              value: 127
+            }
+          });
+        }
+      }
 
       this[isReady] = true;
       this.emit('ready');
