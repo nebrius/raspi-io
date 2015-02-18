@@ -244,20 +244,21 @@ class Raspi extends events.EventEmitter {
   }
 
   pinMode(pin, mode) {
-    var pinInstance = this[getPinInstance](pin);
-    if (this[pins][pin].supportedModes.indexOf(mode) == -1) {
+    var normalizedPin = this.normalize(pin);
+    var pinInstance = this[getPinInstance](normalizedPin);
+    if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
     }
     switch(mode) {
       case INPUT_MODE:
-        pinInstance.peripheral = new DigitalInput(pin);
+        pinInstance.peripheral = new DigitalInput(normalizedPin);
         break;
       case OUTPUT_MODE:
-        pinInstance.peripheral = new DigitalOutput(pin);
+        pinInstance.peripheral = new DigitalOutput(normalizedPin);
         break;
       case PWM_MODE:
       case SERVO_MODE:
-        pinInstance.peripheral = new PWM(pin);
+        pinInstance.peripheral = new PWM(normalizedPin);
         break;
     }
     pinInstance.mode = mode;

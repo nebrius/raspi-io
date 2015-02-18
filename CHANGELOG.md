@@ -1,3 +1,8 @@
+## 2.0.7 (2015-2-17)
+
+- Fixed a pin normalization bug with pinMode
+- Updated dependencies
+
 ## 2.0.6 (2015-2-12)
 
 - Fixed a bug with pin numbering on the B+/A+
