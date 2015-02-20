@@ -1,3 +1,9 @@
+## 2.1.0 (2015-2-20)
+
+- Upgraded dependencies to add support for Node 0.12
+  - io.js support is theoretically there too, but won't work until https://github.com/TooTallNate/node-gyp/pull/564 is landed
+
+
 ## 2.0.7 (2015-2-17)
 
 - Fixed a pin normalization bug with pinMode
