@@ -1,3 +1,7 @@
+## 2.2.0 (2015-2-21)
+
+- Switched from traceur to babel for ES6->ES5 compilation
+
 ## 2.1.0 (2015-2-20)
 
 - Upgraded dependencies to add support for Node 0.12

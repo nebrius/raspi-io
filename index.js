@@ -47,7 +47,7 @@ var LED = 'led0';
 
 var DIGITAL_READ_UPDATE_RATE = 19;
 
-// Hacky but fast emulation of symbols, eliminating the need for $traceurRuntime.toProperty calls
+// Hacky but fast emulation of symbols
 var isReady = '__r$271828_0$__';
 var pins = '__r$271828_1$__';
 var instances = '__r$271828_2$__';
