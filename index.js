@@ -133,7 +133,7 @@ class Raspi extends events.EventEmitter {
     init(() => {
       var pinMappings = getPins();
       this[pins] = [];
-      for (var pin of Object.keys(pinMappings)) {
+      Object.keys(pinMappings).forEach(function (pin) {
         var pinInfo = pinMappings[pin];
         var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
         if (pinInfo.peripherals.indexOf('pwm') != -1) {
@@ -182,7 +182,7 @@ class Raspi extends events.EventEmitter {
             value: 127
           }
         });
-      }
+      }.bind(this));
 
       // Fill in the holes
       for (var i = 0; i < this[pins].length; i++) {

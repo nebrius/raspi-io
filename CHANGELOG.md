@@ -1,3 +1,7 @@
+## 2.2.1 (2015-2-21)
+
+- Fixed a bug with board.pins[mypin].mode not reporting the correct value
+
 ## 2.2.0 (2015-2-21)
 
 - Switched from traceur to babel for ES6->ES5 compilation
