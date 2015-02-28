@@ -1,3 +1,7 @@
+## 2.2.2 (2015-2-28)
+
+- Fixed a method name typo, causing new five.Pin(1) to crash
+
 ## 2.2.1 (2015-2-21)
 
 - Fixed a bug with board.pins[mypin].mode not reporting the correct value

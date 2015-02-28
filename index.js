@@ -279,7 +279,7 @@ class Raspi extends events.EventEmitter {
   digitalRead(pin, handler) {
     var pinInstance = this[getPinInstance](pin);
     if (pinInstance.mode != INPUT_MODE) {
-      this.mode(pin, INPUT_MODE);
+      this.pinMode(pin, INPUT_MODE);
     }
     var interval = setInterval(() => {
       var value;
