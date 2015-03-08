@@ -1,3 +1,7 @@
+## 2.2.3 (2015-3-8)
+
+- Added pin normalization to all instance lookups
+
 ## 2.2.2 (2015-2-28)
 
 - Fixed a method name typo, causing new five.Pin(1) to crash

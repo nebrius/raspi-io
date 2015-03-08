@@ -269,7 +269,7 @@ class Raspi extends events.EventEmitter {
   }
 
   analogWrite(pin, value) {
-    var pinInstance = this[getPinInstance](pin);
+    var pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != PWM_MODE) {
       this.pinMode(pin, PWM_MODE);
     }
@@ -277,7 +277,7 @@ class Raspi extends events.EventEmitter {
   }
 
   digitalRead(pin, handler) {
-    var pinInstance = this[getPinInstance](pin);
+    var pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != INPUT_MODE) {
       this.pinMode(pin, INPUT_MODE);
     }
@@ -297,7 +297,7 @@ class Raspi extends events.EventEmitter {
   }
 
   digitalWrite(pin, value) {
-    var pinInstance = this[getPinInstance](pin);
+    var pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != OUTPUT_MODE) {
       this.pinMode(pin, OUTPUT_MODE);
     }
@@ -308,7 +308,7 @@ class Raspi extends events.EventEmitter {
   }
 
   servoWrite(pin, value) {
-    var pinInstance = this[getPinInstance](pin);
+    var pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != SERVO_MODE) {
       this.pinMode(pin, SERVO_MODE);
     }
