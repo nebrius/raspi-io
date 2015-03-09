@@ -140,8 +140,8 @@ class Raspi extends events.EventEmitter {
           supportedModes.push(PWM_MODE, SERVO_MODE);
         }
         var instance = this[instances][pin] = {
-          peripheral: new DigitalInput(pin),
-          mode: INPUT_MODE,
+          peripheral: null,
+          mode: UNKNOWN_MODE,
           previousWrittenValue: LOW
         };
         this[pins][pin] = Object.create(null, {
@@ -184,7 +184,7 @@ class Raspi extends events.EventEmitter {
         });
       }.bind(this));
 
-      // Fill in the holes
+      // Fill in the holes, sins pins are sparse on the A+/B+/2
       for (var i = 0; i < this[pins].length; i++) {
         if (!this[pins][i]) {
           this[pins][i] = Object.create(null, {

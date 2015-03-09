@@ -1,3 +1,8 @@
+## 3.0.0 (2015-3-9)
+
+- POTENTIALLY BREAKING CHANGE. Changed the default mode for each pin from INPUT to UNKNOWN
+  - This is a necessary change for incorporating I2C support, which is coming very soon
+
 ## 2.2.3 (2015-3-8)
 
 - Added pin normalization to all instance lookups
