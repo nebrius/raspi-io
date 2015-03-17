@@ -1,3 +1,7 @@
+## 3.0.1 (2015-3-17)
+
+- Dependency update to fix a bug with destroying peripherals
+
 ## 3.0.0 (2015-3-9)
 
 - POTENTIALLY BREAKING CHANGE. Changed the default mode for each pin from INPUT to UNKNOWN
