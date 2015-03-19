@@ -58,6 +58,7 @@ var getPinInstance = '__$271828_5$__';
 var i2c = '__r$271828_6$__';
 var i2cDelay = '__r$271828_7$__';
 var i2cRead = '__r$271828_8$__';
+var i2cCheckAlive = '__r$396836_9$__';
 
 
 class Raspi extends events.EventEmitter {
@@ -110,11 +111,13 @@ class Raspi extends events.EventEmitter {
       },
 
       [i2c]: {
-        writable: true
+        writable: true,
+        value: new I2C()
       },
 
       [i2cDelay]: {
-        writable: true
+        writable: true,
+        value: 0
       },
 
       MODES: {
@@ -352,11 +355,16 @@ class Raspi extends events.EventEmitter {
     }
   }
 
-  i2cConfig(delay) {
-    if (this[i2c] === undefined) {
-      this[i2c] = new I2C();
-      this[i2cDelay] = delay;
+  [i2cCheckAlive]() {
+    if (!this[i2c].alive) {
+      throw new Error('I2C pins not in I2C mode');
     }
+  }
+
+  i2cConfig(delay) {
+    this[i2cCheckAlive]();
+
+    this[i2cDelay] = delay || 0;
 
     return this;
   }
@@ -376,9 +384,7 @@ class Raspi extends events.EventEmitter {
      * command [, ...]
      *
      */
-    var buffer;
-
-    this.i2cConfig();
+    this[i2cCheckAlive]();
 
     // If i2cWrite was used for an i2cWriteReg call...
     if (arguments.length === 3 &&
@@ -397,7 +403,7 @@ class Raspi extends events.EventEmitter {
       }
     }
 
-    buffer = new Buffer([cmdRegOrData].concat(inBytes));
+    var buffer = new Buffer([cmdRegOrData].concat(inBytes));
 
     // Only write if bytes provided
     if (buffer.length) {
@@ -408,7 +414,7 @@ class Raspi extends events.EventEmitter {
   }
 
   i2cWriteReg(address, register, value) {
-    this.i2cConfig();
+    this[i2cCheckAlive]();
 
     this[i2c].writeByteSync(address, register, value);
 
@@ -416,37 +422,35 @@ class Raspi extends events.EventEmitter {
   }
 
   [i2cRead](continuous, address, register, bytesToRead, callback) {
-    var data = new Buffer(bytesToRead);
-    var event = "I2C-reply" + address + "-";
-
-    this.i2cConfig();
+    this[i2cCheckAlive]();
 
     // Fix arguments if called with Firmata.js API
     if (arguments.length === 4 &&
-        typeof register === "number" &&
-        typeof bytesToRead === "function") {
+        typeof register === 'number' &&
+        typeof bytesToRead === 'function') {
       callback = bytesToRead;
       bytesToRead = register;
       register = null;
     }
 
-    callback = typeof callback === "function" ? callback : function() {};
+    callback = typeof callback === 'function' ? callback : function() {};
 
+    var event = 'I2C-reply' + address + '-';
     event += register !== null ? register : 0;
 
-    setTimeout(function read() {
-      var afterRead = function (err, buffer) {
+    var read = () => {
+      var afterRead = (err, buffer) => {
         if (err) {
-          return this.emit("error", err);
+          return this.emit('error', err);
         }
 
         // Convert buffer to Array before emit
-        this.emit(event, [].slice.call(buffer));
+        this.emit(event, Array.prototype.slice.call(buffer));
 
         if (continuous) {
-          setTimeout(read.bind(this), this[i2cDelay]);
+          setTimeout(read, this[i2cDelay]);
         }
-      }.bind(this);
+      };
 
       this.once(event, callback);
 
@@ -455,7 +459,9 @@ class Raspi extends events.EventEmitter {
       } else {
         this[i2c].i2cRead(address, bytesToRead, afterRead);
       }
-    }.bind(this), this[i2cDelay]);
+    };
+
+    setTimeout(read, this[i2cDelay]);
 
     return this;
   }
@@ -464,28 +470,28 @@ class Raspi extends events.EventEmitter {
   // i2cRead(address, register, bytesToRead, handler)
   // and
   // i2cRead(address, bytesToRead, handler)
-  i2cRead(address, register, bytesToRead, handler) {
-    return this[i2cRead].apply(this, [true].concat([].slice.call(arguments)));
+  i2cRead(...rest) {
+    return this[i2cRead](true, ...rest);
   }
 
   // this method supports both
   // i2cReadOnce(address, register, bytesToRead, handler)
   // and
   // i2cReadOnce(address, bytesToRead, handler)
-  i2cReadOnce(address, register, bytesToRead, handler) {
-    return this[i2cRead].apply(this, [false].concat([].slice.call(arguments)));
+  i2cReadOnce(...rest) {
+    return this[i2cRead](false, ...rest);
   }
 
-  sendI2CConfig() {
-    return this.i2cConfig.apply(this, arguments);
+  sendI2CConfig(...rest) {
+    return this.i2cConfig(...rest);
   }
 
-  sendI2CWriteRequest() {
-    return this.i2cWrite.apply(this, arguments);
+  sendI2CWriteRequest(...rest) {
+    return this.i2cWrite(...rest);
   }
 
-  sendI2CReadRequest() {
-    return this.i2cReadOnce.apply(this, arguments);
+  sendI2CReadRequest(...rest) {
+    return this.i2cReadOnce(...rest);
   }
 
   setSamplingInterval() {
