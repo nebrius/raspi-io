@@ -433,7 +433,7 @@ class Raspi extends events.EventEmitter {
       register = null;
     }
 
-    callback = typeof callback === 'function' ? callback : function() {};
+    callback = typeof callback === 'function' ? callback : () => {};
 
     var event = 'I2C-reply' + address + '-';
     event += register !== null ? register : 0;
