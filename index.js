@@ -407,7 +407,7 @@ class Raspi extends events.EventEmitter {
 
     // Only write if bytes provided
     if (buffer.length) {
-      this[i2c].i2cWriteSync(address, buffer);
+      this[i2c].writeSync(address, buffer);
     }
 
     return this;
@@ -455,9 +455,9 @@ class Raspi extends events.EventEmitter {
       this.once(event, callback);
 
       if (register !== null) {
-        this[i2c].i2cRead(address, register, bytesToRead, afterRead);
+        this[i2c].read(address, register, bytesToRead, afterRead);
       } else {
-        this[i2c].i2cRead(address, bytesToRead, afterRead);
+        this[i2c].read(address, bytesToRead, afterRead);
       }
     };
 
