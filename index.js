@@ -29,6 +29,7 @@ import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
+import { I2C } from 'raspi-i2c';
 
 // Constants
 var INPUT_MODE = 0;
@@ -54,6 +55,11 @@ var instances = '__r$271828_2$__';
 var analogPins = '__r$271828_3$__';
 var mode = '__$271828_4$__';
 var getPinInstance = '__$271828_5$__';
+var i2c = '__r$271828_6$__';
+var i2cDelay = '__r$271828_7$__';
+var i2cRead = '__r$271828_8$__';
+var i2cCheckAlive = '__r$396836_9$__';
+
 
 class Raspi extends events.EventEmitter {
 
@@ -102,6 +108,16 @@ class Raspi extends events.EventEmitter {
         get() {
           return this[analogPins];
         }
+      },
+
+      [i2c]: {
+        writable: true,
+        value: new I2C()
+      },
+
+      [i2cDelay]: {
+        writable: true,
+        value: 0
       },
 
       MODES: {
@@ -339,16 +355,143 @@ class Raspi extends events.EventEmitter {
     }
   }
 
-  sendI2CConfig() {
-    throw 'sendI2CConfig is not yet implemented';
+  [i2cCheckAlive]() {
+    if (!this[i2c].alive) {
+      throw new Error('I2C pins not in I2C mode');
+    }
   }
 
-  sendI2CWriteRequest() {
-    throw 'sendI2CWriteRequest is not yet implemented';
+  i2cConfig(delay) {
+    this[i2cCheckAlive]();
+
+    this[i2cDelay] = delay || 0;
+
+    return this;
   }
 
-  sendI2CReadRequest() {
-    throw 'sendI2CReadRequest is not yet implemented';
+  // this method supports both
+  // i2cWrite(address, register, inBytes)
+  // and
+  // i2cWrite(address, inBytes)
+  i2cWrite(address, cmdRegOrData, inBytes) {
+    /**
+     * cmdRegOrData:
+     * [... arbitrary bytes]
+     *
+     * or
+     *
+     * cmdRegOrData, inBytes:
+     * command [, ...]
+     *
+     */
+    this[i2cCheckAlive]();
+
+    // If i2cWrite was used for an i2cWriteReg call...
+    if (arguments.length === 3 &&
+        !Array.isArray(cmdRegOrData) &&
+        !Array.isArray(inBytes)) {
+      return this.i2cWriteReg(address, cmdRegOrData, inBytes);
+    }
+
+    // Fix arguments if called with Firmata.js API
+    if (arguments.length === 2) {
+      if (Array.isArray(cmdRegOrData)) {
+        inBytes = cmdRegOrData.slice();
+        cmdRegOrData = inBytes.shift();
+      } else {
+        inBytes = [];
+      }
+    }
+
+    var buffer = new Buffer([cmdRegOrData].concat(inBytes));
+
+    // Only write if bytes provided
+    if (buffer.length) {
+      this[i2c].writeSync(address, buffer);
+    }
+
+    return this;
+  }
+
+  i2cWriteReg(address, register, value) {
+    this[i2cCheckAlive]();
+
+    this[i2c].writeByteSync(address, register, value);
+
+    return this;
+  }
+
+  [i2cRead](continuous, address, register, bytesToRead, callback) {
+    this[i2cCheckAlive]();
+
+    // Fix arguments if called with Firmata.js API
+    if (arguments.length === 4 &&
+        typeof register === 'number' &&
+        typeof bytesToRead === 'function') {
+      callback = bytesToRead;
+      bytesToRead = register;
+      register = null;
+    }
+
+    callback = typeof callback === 'function' ? callback : () => {};
+
+    var event = 'I2C-reply' + address + '-';
+    event += register !== null ? register : 0;
+
+    var read = () => {
+      var afterRead = (err, buffer) => {
+        if (err) {
+          return this.emit('error', err);
+        }
+
+        // Convert buffer to Array before emit
+        this.emit(event, Array.prototype.slice.call(buffer));
+
+        if (continuous) {
+          setTimeout(read, this[i2cDelay]);
+        }
+      };
+
+      this.once(event, callback);
+
+      if (register !== null) {
+        this[i2c].read(address, register, bytesToRead, afterRead);
+      } else {
+        this[i2c].read(address, bytesToRead, afterRead);
+      }
+    };
+
+    setTimeout(read, this[i2cDelay]);
+
+    return this;
+  }
+
+  // this method supports both
+  // i2cRead(address, register, bytesToRead, handler)
+  // and
+  // i2cRead(address, bytesToRead, handler)
+  i2cRead(...rest) {
+    return this[i2cRead](true, ...rest);
+  }
+
+  // this method supports both
+  // i2cReadOnce(address, register, bytesToRead, handler)
+  // and
+  // i2cReadOnce(address, bytesToRead, handler)
+  i2cReadOnce(...rest) {
+    return this[i2cRead](false, ...rest);
+  }
+
+  sendI2CConfig(...rest) {
+    return this.i2cConfig(...rest);
+  }
+
+  sendI2CWriteRequest(...rest) {
+    return this.i2cWrite(...rest);
+  }
+
+  sendI2CReadRequest(...rest) {
+    return this.i2cReadOnce(...rest);
   }
 
   setSamplingInterval() {
