@@ -1,3 +1,7 @@
+## 3.1.1 (2015-3-25)
+
+- I2C support!!!
+
 ## 3.0.1 (2015-3-17)
 
 - Dependency update to fix a bug with destroying peripherals
