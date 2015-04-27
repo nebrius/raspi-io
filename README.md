@@ -45,12 +45,35 @@ To help make it easier, you can specify pins in three ways. The first is to spec
 
 Be sure to read the [full list of pins](https://github.com/bryan-m-hughes/raspi-io/wiki) on the supported models of the Raspberry Pi.
 
+## I2C notes
+
+There are a few limitations and extra steps to be aware of when using I2C on the Raspberry Pi.
+
+First and foremost, be aware that once you use an I2C pin for GPIO, you _cannot_ use it for I2C again until you _reboot_ your Raspberry Pi! If you run the following code, you will get an exception stating "I2C pins not in I2C mode."
+
+```
+var raspi = require('raspi-io');
+var five = require('johnny-five');
+var board = new five.Board({
+  io: new raspi()
+});
+
+board.on('ready', function() {
+
+  new five.Pin('SDA');
+  board.io.i2cWrite(0x18, 0x5, 'hello');
+
+});
+```
+
+Also note that you will need to edit ```/etc/modprobe.d/i2c.conf``` in order to change the I2C baud rate from the default, if you need to.
+
 License
 =======
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Bryan Hughes bryan@theoreticalideations.com (https://theoreticalideations.com)
+Copyright (c) 2014 Bryan Hughes bryan@theoreticalideations.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
