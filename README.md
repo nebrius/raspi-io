@@ -59,10 +59,8 @@ var board = new five.Board({
 });
 
 board.on('ready', function() {
-
   new five.Pin('SDA');
   board.io.i2cWrite(0x18, 0x5, 'hello');
-
 });
 ```
 

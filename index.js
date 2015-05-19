@@ -30,6 +30,7 @@ import { getPins, getPinNumber } from 'raspi-board';
 import { DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
+import { LED } from 'raspi-led';
 
 // Constants
 var INPUT_MODE = 0;
@@ -42,23 +43,22 @@ var UNKNOWN_MODE = 99;
 var LOW = 0;
 var HIGH = 1;
 
-var LED = 'led0';
+var LED_PIN = -1;
 
 // Settings
-
 var DIGITAL_READ_UPDATE_RATE = 19;
 
-// Hacky but fast emulation of symbols
-var isReady = '__r$271828_0$__';
-var pins = '__r$271828_1$__';
-var instances = '__r$271828_2$__';
-var analogPins = '__r$271828_3$__';
-var mode = '__$271828_4$__';
-var getPinInstance = '__$271828_5$__';
-var i2c = '__r$271828_6$__';
-var i2cDelay = '__r$271828_7$__';
-var i2cRead = '__r$271828_8$__';
-var i2cCheckAlive = '__r$396836_9$__';
+// Private symbols
+var isReady = Symbol();
+var pins = Symbol();
+var instances = Symbol();
+var analogPins = Symbol();
+var mode = Symbol();
+var getPinInstance = Symbol();
+var i2c = Symbol();
+var i2cDelay = Symbol();
+var i2cRead = Symbol();
+var i2cCheckAlive = Symbol();
 
 
 class Raspi extends events.EventEmitter {
@@ -142,14 +142,21 @@ class Raspi extends events.EventEmitter {
 
       defaultLed: {
         enumerable: true,
-        value: LED
+        value: LED_PIN
       }
     });
 
     init(() => {
       var pinMappings = getPins();
       this[pins] = [];
-      Object.keys(pinMappings).forEach(function (pin) {
+
+      // Slight hack to get the LED in there, since it's not actually a pin
+      pinMappings[LED_PIN] = {
+        pins: [ LED_PIN ],
+        peripherals: [ 'gpio' ]
+      };
+
+      Object.keys(pinMappings).forEach((pin) => {
         var pinInfo = pinMappings[pin];
         var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
         if (pinInfo.peripherals.indexOf('pwm') != -1) {
@@ -198,7 +205,7 @@ class Raspi extends events.EventEmitter {
             value: 127
           }
         });
-      }.bind(this));
+      });
 
       // Fill in the holes, sins pins are sparse on the A+/B+/2
       for (var i = 0; i < this[pins].length; i++) {
@@ -265,17 +272,21 @@ class Raspi extends events.EventEmitter {
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
     }
-    switch(mode) {
-      case INPUT_MODE:
-        pinInstance.peripheral = new DigitalInput(normalizedPin);
-        break;
-      case OUTPUT_MODE:
-        pinInstance.peripheral = new DigitalOutput(normalizedPin);
-        break;
-      case PWM_MODE:
-      case SERVO_MODE:
-        pinInstance.peripheral = new PWM(normalizedPin);
-        break;
+    if (pin == LED_PIN && !(pinInstance.peripheral instanceof LED)) {
+      pinInstance.peripheral = new LED();
+    } else {
+      switch (mode) {
+        case INPUT_MODE:
+          pinInstance.peripheral = new DigitalInput(normalizedPin);
+          break;
+        case OUTPUT_MODE:
+          pinInstance.peripheral = new DigitalOutput(normalizedPin);
+          break;
+        case PWM_MODE:
+        case SERVO_MODE:
+          pinInstance.peripheral = new PWM(normalizedPin);
+          break;
+      }
     }
     pinInstance.mode = mode;
   }
