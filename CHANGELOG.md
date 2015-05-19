@@ -1,4 +1,4 @@
-## 3.1.2 (2015-5-18)
+## 3.2.0 (2015-5-18)
 
 - Updated I2C dependency to pull in the latest raspi-i2c
 - Added support for controlling the status LED (set as the default LED)
