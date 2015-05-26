@@ -1,3 +1,7 @@
+## 3.2.1 (2015-5-26)
+
+- Updated I2C dependency to pull in the latest raspi-i2c
+
 ## 3.2.0 (2015-5-18)
 
 - Updated I2C dependency to pull in the latest raspi-i2c

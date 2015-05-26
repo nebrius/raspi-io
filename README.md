@@ -64,7 +64,9 @@ board.on('ready', function() {
 });
 ```
 
-Also note that you will need to edit ```/etc/modprobe.d/i2c.conf``` in order to change the I2C baud rate from the default, if you need to.
+Also note that you will need to edit ```/etc/modprobe.d/i2c.conf``` in order to change the I2C baud rate from the default, if you need to. If you notice that behavior is unstable while trying to communicate with another microcontroller, try setting the baudrate to 10000 from the default 100000. This instability has been observed on the Arduino Nano before.
+
+Finally, if you try to access a device that doesn't exist, you will get an error stating ```EIO, i/o error``` (sorry it's not very descriptive).
 
 License
 =======
