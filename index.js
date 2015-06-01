@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import fs from 'fs';
 import events from 'events';
+import Symbol from 'es6-symbol';
 import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { DigitalOutput, DigitalInput } from 'raspi-gpio';

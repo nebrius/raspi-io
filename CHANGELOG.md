@@ -1,3 +1,7 @@
+## 3.2.2 (2015-6-1)
+
+- Added a shim for Symbol to get raspi-io working on Node.js 0.10 again
+
 ## 3.2.1 (2015-5-26)
 
 - Updated I2C dependency to pull in the latest raspi-i2c
