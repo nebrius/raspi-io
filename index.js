@@ -561,6 +561,10 @@ class Raspi extends events.EventEmitter {
   sendOneWireWriteAndRead() {
     throw 'sendOneWireWriteAndRead is not yet implemented';
   }
+
+  pingRead() {
+    throw 'pingRead is not yet implemented';
+  }
 }
 
 Object.defineProperty(Raspi, 'isRaspberryPi', {

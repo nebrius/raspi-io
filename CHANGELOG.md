@@ -1,3 +1,7 @@
+## 3.3.0 (2015-7-2)
+
+- Added pingRead stub. It's currently unimplemented, but will at least throw a nice error.
+
 ## 3.2.2 (2015-6-1)
 
 - Added a shim for Symbol to get raspi-io working on Node.js 0.10 again
