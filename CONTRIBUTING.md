@@ -88,7 +88,7 @@ If you feel you have been falsely or unfairly accused of violating this Code of 
 
 ### Contact Info
 
-If you need to report an incident, please email bryan at bryan@theoreticalideations.com.
+If you need to report an incident, please email Bryan, a.k.a. nebrius, at bryan@theoreticalideations.com.
 
 ### Credit, License, and Attribution
 
