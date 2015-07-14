@@ -1,3 +1,7 @@
+## 3.3.3 (2015-7-14)
+
+- Updated the repository links to point to their new location
+
 ## 3.3.2 (2015-7-14)
 
 - Updated raspi-board dependency to pull in fix for overclocked board detection

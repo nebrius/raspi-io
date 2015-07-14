@@ -1,13 +1,13 @@
 {
   "name": "raspi-io",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bryan-m-hughes/raspi-io.git"
+    "url": "https://github.com/nebrius/raspi-io.git"
   },
-  "homepage": "https://github.com/bryan-m-hughes/raspi-io",
+  "homepage": "https://github.com/nebrius/raspi-io",
   "keywords": [
     "raspberrypi",
     "nodebots",
@@ -44,6 +44,6 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bryan-m-hughes/raspi-io/issues"
+    "url": "https://github.com/nebrius/raspi-io/issues"
   }
 }
