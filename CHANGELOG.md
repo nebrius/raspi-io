@@ -1,4 +1,8 @@
-## 3.3.1 (2015-7-2)
+## 3.3.2 (2015-7-14)
+
+- Updated raspi-board dependency to pull in fix for overclocked board detection
+
+## 3.3.1 (2015-7-13)
 
 - Added missing es6-symbol shim
 - Marked certain unimplemented methods as won't implement
