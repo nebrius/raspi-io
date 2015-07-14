@@ -1,3 +1,11 @@
+## 3.3.1 (2015-7-2)
+
+- Added missing es6-symbol shim
+- Marked certain unimplemented methods as won't implement
+- Added a contributing guide
+- Added code linter
+- Update code style to use newer best practices
+
 ## 3.3.0 (2015-7-2)
 
 - Added pingRead stub. It's currently unimplemented, but will at least throw a nice error.

@@ -24,7 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 import fs from 'fs';
-import events from 'events';
+import { EventEmitter } from 'events';
 import Symbol from 'es6-symbol';
 import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
@@ -32,37 +32,37 @@ import { DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
+import 'es6-symbol/implement';
 
 // Constants
-var INPUT_MODE = 0;
-var OUTPUT_MODE = 1;
-var ANALOG_MODE = 2;
-var PWM_MODE = 3;
-var SERVO_MODE = 4;
-var UNKNOWN_MODE = 99;
+const INPUT_MODE = 0;
+const OUTPUT_MODE = 1;
+const ANALOG_MODE = 2;
+const PWM_MODE = 3;
+const SERVO_MODE = 4;
+const UNKNOWN_MODE = 99;
 
-var LOW = 0;
-var HIGH = 1;
+const LOW = 0;
+const HIGH = 1;
 
-var LED_PIN = -1;
+const LED_PIN = -1;
 
 // Settings
-var DIGITAL_READ_UPDATE_RATE = 19;
+const DIGITAL_READ_UPDATE_RATE = 19;
 
 // Private symbols
-var isReady = Symbol();
-var pins = Symbol();
-var instances = Symbol();
-var analogPins = Symbol();
-var mode = Symbol();
-var getPinInstance = Symbol();
-var i2c = Symbol();
-var i2cDelay = Symbol();
-var i2cRead = Symbol();
-var i2cCheckAlive = Symbol();
+const isReady = Symbol();
+const pins = Symbol();
+const instances = Symbol();
+const analogPins = Symbol();
+const getPinInstance = Symbol();
+const i2c = Symbol();
+const i2cDelay = Symbol();
+const i2cRead = Symbol();
+const i2cCheckAlive = Symbol();
 
 
-class Raspi extends events.EventEmitter {
+class Raspi extends EventEmitter {
 
   constructor() {
     super();
@@ -148,7 +148,7 @@ class Raspi extends events.EventEmitter {
     });
 
     init(() => {
-      var pinMappings = getPins();
+      const pinMappings = getPins();
       this[pins] = [];
 
       // Slight hack to get the LED in there, since it's not actually a pin
@@ -158,12 +158,12 @@ class Raspi extends events.EventEmitter {
       };
 
       Object.keys(pinMappings).forEach((pin) => {
-        var pinInfo = pinMappings[pin];
-        var supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
+        const pinInfo = pinMappings[pin];
+        const supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
         if (pinInfo.peripherals.indexOf('pwm') != -1) {
           supportedModes.push(PWM_MODE, SERVO_MODE);
         }
-        var instance = this[instances][pin] = {
+        const instance = this[instances][pin] = {
           peripheral: null,
           mode: UNKNOWN_MODE,
           previousWrittenValue: LOW
@@ -182,13 +182,13 @@ class Raspi extends events.EventEmitter {
           value: {
             enumerable: true,
             get() {
-              switch(instance.mode) {
+              switch (instance.mode) {
                 case INPUT_MODE:
                   return instance.peripheral.read();
-                  break;
                 case OUTPUT_MODE:
                   return instance.previousWrittenValue;
-                  break;
+                default:
+                  return null;
               }
             },
             set(value) {
@@ -209,7 +209,7 @@ class Raspi extends events.EventEmitter {
       });
 
       // Fill in the holes, sins pins are sparse on the A+/B+/2
-      for (var i = 0; i < this[pins].length; i++) {
+      for (let i = 0; i < this[pins].length; i++) {
         if (!this[pins][i]) {
           this[pins][i] = Object.create(null, {
             supportedModes: {
@@ -248,11 +248,11 @@ class Raspi extends events.EventEmitter {
   }
 
   reset() {
-    throw 'reset is not supported on the Raspberry Pi';
+    throw new Error('reset is not supported on the Raspberry Pi');
   }
 
   normalize(pin) {
-    var normalizedPin = getPinNumber(pin);
+    const normalizedPin = getPinNumber(pin);
     if (typeof normalizedPin == 'undefined') {
       throw new Error('Unknown pin "' + pin + '"');
     }
@@ -260,7 +260,7 @@ class Raspi extends events.EventEmitter {
   }
 
   [getPinInstance](pin) {
-    var pinInstance = this[instances][pin];
+    const pinInstance = this[instances][pin];
     if (!pinInstance) {
       throw new Error('Unknown pin "' + pin + '"');
     }
@@ -268,8 +268,8 @@ class Raspi extends events.EventEmitter {
   }
 
   pinMode(pin, mode) {
-    var normalizedPin = this.normalize(pin);
-    var pinInstance = this[getPinInstance](normalizedPin);
+    const normalizedPin = this.normalize(pin);
+    const pinInstance = this[getPinInstance](normalizedPin);
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
     }
@@ -287,17 +287,20 @@ class Raspi extends events.EventEmitter {
         case SERVO_MODE:
           pinInstance.peripheral = new PWM(normalizedPin);
           break;
+        default:
+          console.warn('Unknown pin mode: ' + mode);
+          break;
       }
     }
     pinInstance.mode = mode;
   }
 
-  analogRead(pin, handler) {
+  analogRead() {
     throw new Error('analogRead is not supported on the Raspberry Pi');
   }
 
   analogWrite(pin, value) {
-    var pinInstance = this[getPinInstance](this.normalize(pin));
+    const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != PWM_MODE) {
       this.pinMode(pin, PWM_MODE);
     }
@@ -305,18 +308,20 @@ class Raspi extends events.EventEmitter {
   }
 
   digitalRead(pin, handler) {
-    var pinInstance = this[getPinInstance](this.normalize(pin));
+    const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != INPUT_MODE) {
       this.pinMode(pin, INPUT_MODE);
     }
-    var interval = setInterval(() => {
-      var value;
+    const interval = setInterval(() => {
+      let value;
       if (pinInstance.mode == INPUT_MODE) {
         value = pinInstance.peripheral.read();
       } else {
         value = pinInstance.previousWrittenValue;
       }
-      handler && handler(value);
+      if (handler) {
+        handler(value);
+      }
       this.emit('digital-read-' + pin, value);
     }, DIGITAL_READ_UPDATE_RATE);
     pinInstance.peripheral.on('destroyed', () => {
@@ -325,7 +330,7 @@ class Raspi extends events.EventEmitter {
   }
 
   digitalWrite(pin, value) {
-    var pinInstance = this[getPinInstance](this.normalize(pin));
+    const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != OUTPUT_MODE) {
       this.pinMode(pin, OUTPUT_MODE);
     }
@@ -336,11 +341,11 @@ class Raspi extends events.EventEmitter {
   }
 
   servoWrite(pin, value) {
-    var pinInstance = this[getPinInstance](this.normalize(pin));
+    const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != SERVO_MODE) {
       this.pinMode(pin, SERVO_MODE);
     }
-    pinInstance.peripheral.write(48 + Math.round(value * 48/ 180));
+    pinInstance.peripheral.write(48 + Math.round(value * 48 / 180));
   }
 
   queryCapabilities(cb) {
@@ -381,21 +386,7 @@ class Raspi extends events.EventEmitter {
     return this;
   }
 
-  // this method supports both
-  // i2cWrite(address, register, inBytes)
-  // and
-  // i2cWrite(address, inBytes)
   i2cWrite(address, cmdRegOrData, inBytes) {
-    /**
-     * cmdRegOrData:
-     * [... arbitrary bytes]
-     *
-     * or
-     *
-     * cmdRegOrData, inBytes:
-     * command [, ...]
-     *
-     */
     this[i2cCheckAlive]();
 
     // If i2cWrite was used for an i2cWriteReg call...
@@ -415,7 +406,7 @@ class Raspi extends events.EventEmitter {
       }
     }
 
-    var buffer = new Buffer([cmdRegOrData].concat(inBytes));
+    const buffer = new Buffer([cmdRegOrData].concat(inBytes));
 
     // Only write if bytes provided
     if (buffer.length) {
@@ -437,9 +428,10 @@ class Raspi extends events.EventEmitter {
     this[i2cCheckAlive]();
 
     // Fix arguments if called with Firmata.js API
-    if (arguments.length === 4 &&
-        typeof register === 'number' &&
-        typeof bytesToRead === 'function') {
+    if (arguments.length == 4 &&
+      typeof register == 'number' &&
+      typeof bytesToRead == 'function'
+    ) {
       callback = bytesToRead;
       bytesToRead = register;
       register = null;
@@ -447,11 +439,11 @@ class Raspi extends events.EventEmitter {
 
     callback = typeof callback === 'function' ? callback : () => {};
 
-    var event = 'I2C-reply' + address + '-';
+    let event = 'I2C-reply' + address + '-';
     event += register !== null ? register : 0;
 
-    var read = () => {
-      var afterRead = (err, buffer) => {
+    const read = () => {
+      const afterRead = (err, buffer) => {
         if (err) {
           return this.emit('error', err);
         }
@@ -478,18 +470,10 @@ class Raspi extends events.EventEmitter {
     return this;
   }
 
-  // this method supports both
-  // i2cRead(address, register, bytesToRead, handler)
-  // and
-  // i2cRead(address, bytesToRead, handler)
   i2cRead(...rest) {
     return this[i2cRead](true, ...rest);
   }
 
-  // this method supports both
-  // i2cReadOnce(address, register, bytesToRead, handler)
-  // and
-  // i2cReadOnce(address, bytesToRead, handler)
   i2cReadOnce(...rest) {
     return this[i2cRead](false, ...rest);
   }
@@ -506,64 +490,64 @@ class Raspi extends events.EventEmitter {
     return this.i2cReadOnce(...rest);
   }
 
-  setSamplingInterval() {
-    throw 'setSamplingInterval is not yet implemented';
-  }
-
-  reportAnalogPin() {
-    throw 'reportAnalogPin is not yet implemented';
-  }
-
-  reportDigitalPin() {
-    throw 'reportDigitalPin is not yet implemented';
-  }
-
-  pulseIn() {
-    throw 'pulseIn is not yet implemented';
-  }
-
-  stepperConfig() {
-    throw 'stepperConfig is not yet implemented';
-  }
-
-  stepperStep() {
-    throw 'stepperStep is not yet implemented';
-  }
-
   sendOneWireConfig() {
-    throw 'sendOneWireConfig is not yet implemented';
+    throw new Error('sendOneWireConfig is not supported on the Raspberry Pi');
   }
 
   sendOneWireSearch() {
-    throw 'sendOneWireSearch is not yet implemented';
+    throw new Error('sendOneWireSearch is not supported on the Raspberry Pi');
   }
 
   sendOneWireAlarmsSearch() {
-    throw 'sendOneWireAlarmsSearch is not yet implemented';
+    throw new Error('sendOneWireAlarmsSearch is not supported on the Raspberry Pi');
   }
 
   sendOneWireRead() {
-    throw 'sendOneWireRead is not yet implemented';
+    throw new Error('sendOneWireRead is not supported on the Raspberry Pi');
   }
 
   sendOneWireReset() {
-    throw 'sendOneWireReset is not yet implemented';
+    throw new Error('sendOneWireConfig is not supported on the Raspberry Pi');
   }
 
   sendOneWireWrite() {
-    throw 'sendOneWireWrite is not yet implemented';
+    throw new Error('sendOneWireWrite is not supported on the Raspberry Pi');
   }
 
   sendOneWireDelay() {
-    throw 'sendOneWireDelay is not yet implemented';
+    throw new Error('sendOneWireDelay is not supported on the Raspberry Pi');
   }
 
   sendOneWireWriteAndRead() {
-    throw 'sendOneWireWriteAndRead is not yet implemented';
+    throw new Error('sendOneWireWriteAndRead is not supported on the Raspberry Pi');
+  }
+
+  setSamplingInterval() {
+    throw new Error('setSamplingInterval is not yet implemented');
+  }
+
+  reportAnalogPin() {
+    throw new Error('reportAnalogPin is not yet implemented');
+  }
+
+  reportDigitalPin() {
+    throw new Error('reportDigitalPin is not yet implemented');
   }
 
   pingRead() {
-    throw 'pingRead is not yet implemented';
+    throw new Error('pingRead is not yet implemented');
+  }
+
+  pulseIn() {
+    throw new Error('pulseIn is not yet implemented');
+  }
+
+  stepperConfig() {
+    throw new Error('stepperConfig is not yet implemented');
+  }
+
+  stepperStep() {
+    throw new Error('stepperStep is not yet implemented');
   }
 }
 
@@ -572,7 +556,7 @@ Object.defineProperty(Raspi, 'isRaspberryPi', {
   value: () => {
     // Determining if a system is a Raspberry Pi isn't possible through
     // the os module on Raspbian, so we read it from the file system instead
-    var isRaspberryPi = false;
+    let isRaspberryPi = false;
     try {
       isRaspberryPi = fs.readFileSync('/etc/os-release').toString().indexOf('Raspbian') !== -1;
     } catch(e) {}// Squash file not found, etc errors
