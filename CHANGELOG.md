@@ -1,3 +1,7 @@
+## 3.3.4 (2015-7-18)
+
+- Updated dependencies
+
 ## 3.3.3 (2015-7-14)
 
 - Updated the repository links to point to their new location
