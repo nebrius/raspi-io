@@ -25,14 +25,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import fs from 'fs';
 import { EventEmitter } from 'events';
-import Symbol from 'es6-symbol';
 import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
-import 'es6-symbol/implement';
+
+// Hacky quick Symbol polyfill, since es6-symbol refuses to install with Node 0.10 from http://node-arm.herokuapp.com/
+if (typeof global.Symbol != 'function') {
+  global.Symbol = (name) => {
+    return '__$raspi_symbol_' + name + '_' + Math.round(Math.random() * 0xFFFFFFF) + '$__';
+  };
+}
 
 // Constants
 const INPUT_MODE = 0;
@@ -51,15 +56,15 @@ const LED_PIN = -1;
 const DIGITAL_READ_UPDATE_RATE = 19;
 
 // Private symbols
-const isReady = Symbol();
-const pins = Symbol();
-const instances = Symbol();
-const analogPins = Symbol();
-const getPinInstance = Symbol();
-const i2c = Symbol();
-const i2cDelay = Symbol();
-const i2cRead = Symbol();
-const i2cCheckAlive = Symbol();
+const isReady = Symbol('isReady');
+const pins = Symbol('pins');
+const instances = Symbol('instances');
+const analogPins = Symbol('analogPins');
+const getPinInstance = Symbol('getPinInstance');
+const i2c = Symbol('i2c');
+const i2cDelay = Symbol('i2cDelay');
+const i2cRead = Symbol('i2cRead');
+const i2cCheckAlive = Symbol('i2cCheckAlive');
 
 
 class Raspi extends EventEmitter {

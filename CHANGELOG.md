@@ -1,3 +1,8 @@
+## 3.3.5 (2015-8-12)
+
+- Updated dependencies to fix a crash on Node 0.10
+- Internal code cleanup
+
 ## 3.3.4 (2015-7-18)
 
 - Updated dependencies
