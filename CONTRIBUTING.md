@@ -17,7 +17,7 @@ If you would like to contribute code to Raspi-IO, that's awesome, go you!
 
 All code is written in ECMAScript 2015 (previously known as ECMAscript 6 or ES6). We use Babel to compile the code to ES5 and have a gulpfile to handle the translation.
 
-To build the project, run `gulp` from the top level directory of this repository.
+To build the project, first install eslint and gulp, if you have not alreadym by running ```npm install -g eslint gulp```. The run ```gulp``` from the top level directory of this repository.
 
 The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly :)).
 

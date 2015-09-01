@@ -384,12 +384,12 @@ class Raspi extends EventEmitter {
   }
 
   i2cConfig(options) {
-    var delay;
+    let delay;
 
-    if (typeof options === "number") {
+    if (typeof options === 'number') {
       delay = options;
     } else {
-      if (typeof options === "object" && options !== null) {
+      if (typeof options === 'object' && options !== null) {
         delay = options.delay;
       }
     }

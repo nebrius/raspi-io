@@ -1,3 +1,7 @@
+## 3.4.0 (2015-9-1)
+
+- Updated the i2cConfig method to take a config option as well as number
+
 ## 3.3.5 (2015-8-12)
 
 - Updated dependencies to fix a crash on Node 0.10
