@@ -1,3 +1,11 @@
+## 4.0.0 (unpublished)
+
+- Updated the default pin mode to be input instead of unknown
+- Reworked the I2C pins so that they CANNOT be used for GPIO.
+  - This is to work around an issue where we can't change the pin mode back to
+    I2C once we change it to GPIO
+- WARNING: BOTH OF THESE CHANGES ARE POTENTIALLY BREAKING!
+
 ## 3.4.0 (2015-9-1)
 
 - Updated the i2cConfig method to take a config option as well as number

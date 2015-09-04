@@ -164,13 +164,22 @@ class Raspi extends EventEmitter {
 
       Object.keys(pinMappings).forEach((pin) => {
         const pinInfo = pinMappings[pin];
-        const supportedModes = [ INPUT_MODE, OUTPUT_MODE ];
-        if (pinInfo.peripherals.indexOf('pwm') != -1) {
-          supportedModes.push(PWM_MODE, SERVO_MODE);
+        const supportedModes = [];
+        // We don't want I2C to be used for anything else, since changing the
+        // pin mode makes it unable to ever do I2C again.
+        if (pinInfo.peripherals.indexOf('i2c') == -1) {
+          if (pin == LED_PIN) {
+            supportedModes.push(OUTPUT_MODE);
+          } else if (pinInfo.peripherals.indexOf('gpio') != -1) {
+            supportedModes.push(INPUT_MODE, OUTPUT_MODE);
+          }
+          if (pinInfo.peripherals.indexOf('pwm') != -1) {
+            supportedModes.push(PWM_MODE, SERVO_MODE);
+          }
         }
         const instance = this[instances][pin] = {
           peripheral: null,
-          mode: UNKNOWN_MODE,
+          mode: supportedModes.indexOf(OUTPUT_MODE) == -1 ? UNKNOWN_MODE : OUTPUT_MODE,
           previousWrittenValue: LOW
         };
         this[pins][pin] = Object.create(null, {
@@ -211,6 +220,10 @@ class Raspi extends EventEmitter {
             value: 127
           }
         });
+        if (instance.mode == OUTPUT_MODE) {
+          this.pinMode(pin, OUTPUT_MODE);
+          this.digitalWrite(pin, LOW);
+        }
       });
 
       // Fill in the holes, sins pins are sparse on the A+/B+/2

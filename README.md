@@ -45,26 +45,13 @@ The pins on the Raspberry Pi are a little complicated. There are multiple header
 
 To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. ```'GPIO18'```. The second way is to specify by pin number, which is specified in the form "P[header]-[pin]", e.g. ```'P1-7'```. The final way is specify the [Wiring Pi virtual pin number](http://wiringpi.com/pins/), e.g. ```7```. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
 
-Be sure to read the [full list of pins](https://github.com/bryan-m-hughes/raspi-io/wiki) on the supported models of the Raspberry Pi.
+Be sure to read the [full list of pins](https://github.com/nebrius/raspi-io/wiki) on the supported models of the Raspberry Pi.
 
 ## I2C notes
 
 There are a few limitations and extra steps to be aware of when using I2C on the Raspberry Pi.
 
-First and foremost, be aware that once you use an I2C pin for GPIO, you _cannot_ use it for I2C again until you _reboot_ your Raspberry Pi! If you run the following code, you will get an exception stating "I2C pins not in I2C mode."
-
-```
-var raspi = require('raspi-io');
-var five = require('johnny-five');
-var board = new five.Board({
-  io: new raspi()
-});
-
-board.on('ready', function() {
-  new five.Pin('SDA');
-  board.io.i2cWrite(0x18, 0x5, 'hello');
-});
-```
+First, note that the I2C pins can _only_ be used for I2C with Raspi IO, even though they are capable of GPIO at the hardware level.
 
 Also note that you will need to edit ```/boot/config.txt``` in order to change the I2C baud rate from the default, if you need to. If you notice that behavior is unstable while trying to communicate with another microcontroller, try setting the baudrate to 10000 from the default 100000. This instability has been observed on the Arduino Nano before.
 
