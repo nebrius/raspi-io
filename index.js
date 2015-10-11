@@ -27,7 +27,7 @@ import fs from 'fs';
 import { EventEmitter } from 'events';
 import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
-import { DigitalOutput, DigitalInput } from 'raspi-gpio';
+import { PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
@@ -349,10 +349,12 @@ class Raspi extends EventEmitter {
 
   digitalWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
-    if (pinInstance.mode != OUTPUT_MODE) {
+    if (pinInstance.mode === INPUT_MODE && value === HIGH) {
+      pinInstance.peripheral = new DigitalInput({ pin: this.normalize(pin), pullResistor: PULL_DOWN });
+    } else if (pinInstance.mode != OUTPUT_MODE) {
       this.pinMode(pin, OUTPUT_MODE);
     }
-    if (value != pinInstance.previousWrittenValue) {
+    if (pinInstance.mode === OUTPUT_MODE && value != pinInstance.previousWrittenValue) {
       pinInstance.peripheral.write(value ? HIGH : LOW);
       pinInstance.previousWrittenValue = value;
     }
