@@ -1,5 +1,7 @@
 # Contributing to Raspi-IO
 
+So you're interested in contributing to Raspi IO. That's awesome, go you! This document provides information on various ways that you can help out the project.
+
 ## Issues and Feature Requests
 
 If you run into a bug, or would like to see a new feature added to Raspi-IO, please [open an issue](https://github.com/nebrius/raspi-io/issues).
@@ -13,15 +15,19 @@ When submitting a bug report, please include the following information:
 
 ## Submitting Code
 
-If you would like to contribute code to Raspi-IO, that's awesome, go you!
-
 All code is written in ECMAScript 2015 (previously known as ECMAscript 6 or ES6). We use Babel to compile the code to ES5 and have a gulpfile to handle the translation.
 
-To build the project, first install eslint and gulp, if you have not alreadym by running ```npm install -g eslint gulp```. The run ```gulp``` from the top level directory of this repository.
+To build the project, first install gulp, if you have not already, by running ```npm install -g gulp```. The run ```gulp``` from the top level directory of this repository.
 
-The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly :)).
+The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly 😄).
 
-If you are unfamiliar with ES2015, take a look at the [ES6 Features page](http://es6-features.org/#Constants).
+If you are unfamiliar with ES2015, take a look at [Babel's Learn EES2015 page](https://babeljs.io/docs/learn-es2015/).
+
+## Submitting Docs
+
+If you would like to help create better documentation, then that is seriously awesome. Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.
+
+The documentation for this project is split between the READMEs for Raspi IO and it's dependencies, and the wiki for Raspi IO. If you would like to help with any of the READMEs, create a pull request and submit it! If you would like to edit the wiki, drop into the gitter chat, or open an issue, and we'll grant you access so you can edit the wiki.
 
 ## Open Open Source
 
@@ -29,7 +35,7 @@ This project follows the [open open source philosophy](http://openopensource.org
 
 > Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
 
-In other words, you get automatic commit access to this project when you're first non-trivial pull request is landed, and are then considered a core contributor.
+In other words, you get automatic commit access to this project when you're first non-trivial pull request is landed, and are automatically considered a core contributor. This applies to both code contributions AND documentation contributions.
 
 ## Code of Conduct
 
@@ -88,7 +94,7 @@ If you feel you have been falsely or unfairly accused of violating this Code of 
 
 ### Contact Info
 
-If you need to report an incident, please email Bryan, a.k.a. nebrius, at bryan@theoreticalideations.com.
+If you need to report an incident, please email Bryan Hughes ([@nebrius](https://github.com/nebrius)), at bryan@theoreticalideations.com.
 
 ### Credit, License, and Attribution
 
