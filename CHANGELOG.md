@@ -1,4 +1,8 @@
-## 4.0.0 (unpublished)
+## 4.1.0 (2015-10-13)
+
+- Updated dependencies and build systems to fix a few bugs
+
+## 4.0.0 (2015-9-4)
 
 - Updated the default pin mode to be input instead of unknown
 - Reworked the I2C pins so that they CANNOT be used for GPIO.

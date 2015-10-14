@@ -587,7 +587,7 @@ Object.defineProperty(Raspi, 'isRaspberryPi', {
     let isRaspberryPi = false;
     try {
       isRaspberryPi = fs.readFileSync('/etc/os-release').toString().indexOf('Raspbian') !== -1;
-    } catch(e) {}// Squash file not found, etc errors
+    } catch (e) {}// Squash file not found, etc errors
     return isRaspberryPi;
   }
 });

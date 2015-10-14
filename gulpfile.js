@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2014 Bryan Hughes <bryan@theoreticalideations.com> (http://theoreticalideations.com)
+Copyright (c) 2014 Bryan Hughes <bryan@theoreticalideations.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@ THE SOFTWARE.
 var gulp = require('gulp');
 var babel = require('gulp-babel');
 var sourcemaps = require('gulp-sourcemaps');
+var eslint = require('gulp-eslint');
 var del = require('del');
-var spawn = require('child_process').spawn;
 
 gulp.task('default', ['clean', 'lint'], function() {
   return gulp.src('index.js')
@@ -39,12 +39,12 @@ gulp.task('default', ['clean', 'lint'], function() {
 });
 
 gulp.task('clean', function(cb) {
-  del(['lib'], cb);
+  del(['lib']).then(function() { cb(); });
 });
 
-gulp.task('lint', function(cb) {
-  var lint = spawn('eslint', [ 'index.js' ], {
-    stdio: 'inherit'
-  });
-  lint.on('close', cb);
+gulp.task('lint', function() {
+  return gulp.src('index.js')
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failOnError());
 });
