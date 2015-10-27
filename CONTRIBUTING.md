@@ -23,6 +23,25 @@ The first step in the compile process lints the code to check for issues and to 
 
 If you are unfamiliar with ES2015, take a look at [Babel's Learn EES2015 page](https://babeljs.io/docs/learn-es2015/).
 
+### Raspi IO and Raspi.js module architecture
+
+Raspi IO uses a modular architecture, and is composed of several different NPM packages. These packages are split into two groups: Raspi IO and Raspi.js. Raspi.js provides a Raspberry Pi specific API for working with the Raspberry Pi's hardware, and Raspi IO acts as a translation layer between Johnny-Five and Raspi.js. Raspi IO is a single package, and everything else constitutes Raspi.js. This diagram shows the relationship between all of the packages:
+
+!(Raspi IO Architecture Diagram)[https://theoreticalideations.com/static/raspi-io-architecture.png]
+
+Check out the [Raspi.js](https://github.com/nebrius/raspi) repository for more information on Raspi.js.
+
+There are 8 package total that make up Raspi.js:
+
+- [raspi](https://github.com/nebrius/raspi): This is the main package, analagous to the `express` package. It doesn't actually control any hardware on its own, it's only purpose is to handle initialization.
+- [raspi-wiringpi](https://github.com/nebrius/raspi-wiringpi): This is a support package, of sorts. It wraps up Wiring Pi into something that can be installed from NPM.
+- [raspi-board](https://github.com/nebrius/raspi-board): This package can be used independently of Raspi.js, and provides pin mapping services and board detection capabilities.
+- [raspi-peripheral](https://github.com/nebrius/raspi-peripheral): This package provides a base class that all other concrete peripherals inherit from. Any module that provides a way for interacting with hardware _must_ inherit from this class, as it handles pin contention (i.e. when someone tries to do, say, PWM and GPIO on the same pin, which isn't possible).
+- [raspi-gpio](https://github.com/nebrius/raspi-gpio): This peripheral package provides access to GPIO.
+- [raspi-pwm](https://github.com/nebrius/raspi-pwm): This peripheral package provides access to PWM.
+- [raspi-i2c](https://github.com/nebrius/raspi-i2c): This peripheral package provides access to I2C.
+- [raspi-led](https://github.com/nebrius/raspi-led): This peripheral package provides access to the on board status LED.
+
 ## Submitting Docs
 
 If you would like to help create better documentation, then that is seriously awesome. Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.

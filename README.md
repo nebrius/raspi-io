@@ -19,9 +19,13 @@ If you have a bug report, feature request, or wish to contribute code, please be
 
 ## Installation
 
+Install with NPM:
+
 ```
 npm install raspi-io
 ```
+
+**Warning**: this module requires GCC 4.8 or newer. This means that you should be running Raspbian Jesse or newer, released in September of 2015.
 
 ## Usage
 
@@ -43,7 +47,7 @@ board.on('ready', function() {
 });
 ```
 
-The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not just ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
+The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
 Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/bryan-m-hughes/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
@@ -53,7 +57,7 @@ The pins on the Raspberry Pi are a little complicated. There are multiple header
 
 To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. ```'GPIO18'```. The second way is to specify by pin number, which is specified in the form "P[header]-[pin]", e.g. ```'P1-7'```. The final way is specify the [Wiring Pi virtual pin number](http://wiringpi.com/pins/), e.g. ```7```. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
 
-Be sure to read the [full list of pins](https://github.com/nebrius/raspi-io/wiki) on the supported models of the Raspberry Pi.
+Be sure to read the [full list of pins](https://github.com/nebrius/raspi-io/wiki/Pin-Information) on the supported models of the Raspberry Pi.
 
 ## I2C notes
 
