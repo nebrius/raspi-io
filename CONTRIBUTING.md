@@ -1,5 +1,7 @@
 # Contributing to Raspi-IO
 
+So you're interested in contributing to Raspi IO. That's awesome, go you! This document provides information on various ways that you can help out the project.
+
 ## Issues and Feature Requests
 
 If you run into a bug, or would like to see a new feature added to Raspi-IO, please [open an issue](https://github.com/nebrius/raspi-io/issues).
@@ -13,15 +15,38 @@ When submitting a bug report, please include the following information:
 
 ## Submitting Code
 
-If you would like to contribute code to Raspi-IO, that's awesome, go you!
-
 All code is written in ECMAScript 2015 (previously known as ECMAscript 6 or ES6). We use Babel to compile the code to ES5 and have a gulpfile to handle the translation.
 
-To build the project, first install eslint and gulp, if you have not alreadym by running ```npm install -g eslint gulp```. The run ```gulp``` from the top level directory of this repository.
+To build the project, first install gulp, if you have not already, by running ```npm install -g gulp```. The run ```gulp``` from the top level directory of this repository.
 
-The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly :)).
+The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly 😄).
 
-If you are unfamiliar with ES2015, take a look at the [ES6 Features page](http://es6-features.org/#Constants).
+If you are unfamiliar with ES2015, take a look at [Babel's Learn EES2015 page](https://babeljs.io/docs/learn-es2015/).
+
+### Raspi IO and Raspi.js module architecture
+
+Raspi IO uses a modular architecture, and is composed of several different NPM packages. These packages are split into two groups: Raspi IO and Raspi.js. Raspi.js provides a Raspberry Pi specific API for working with the Raspberry Pi's hardware, and Raspi IO acts as a translation layer between Johnny-Five and Raspi.js. Raspi IO is a single package, and everything else constitutes Raspi.js. This diagram shows the relationship between all of the packages:
+
+![Raspi IO Architecture Diagram](https://theoreticalideations.com/static/raspi-io-architecture.png)
+
+Check out the [Raspi.js](https://github.com/nebrius/raspi) repository for more information on Raspi.js.
+
+There are 8 package total that make up Raspi.js:
+
+- [raspi](https://github.com/nebrius/raspi): This is the main package, analagous to the `express` package. It doesn't actually control any hardware on its own, it's only purpose is to handle initialization.
+- [raspi-wiringpi](https://github.com/nebrius/raspi-wiringpi): This is a support package, of sorts. It wraps up Wiring Pi into something that can be installed from NPM.
+- [raspi-board](https://github.com/nebrius/raspi-board): This package can be used independently of Raspi.js, and provides pin mapping services and board detection capabilities.
+- [raspi-peripheral](https://github.com/nebrius/raspi-peripheral): This package provides a base class that all other concrete peripherals inherit from. Any module that provides a way for interacting with hardware _must_ inherit from this class, as it handles pin contention (i.e. when someone tries to do, say, PWM and GPIO on the same pin, which isn't possible).
+- [raspi-gpio](https://github.com/nebrius/raspi-gpio): This peripheral package provides access to GPIO.
+- [raspi-pwm](https://github.com/nebrius/raspi-pwm): This peripheral package provides access to PWM.
+- [raspi-i2c](https://github.com/nebrius/raspi-i2c): This peripheral package provides access to I2C.
+- [raspi-led](https://github.com/nebrius/raspi-led): This peripheral package provides access to the on board status LED.
+
+## Submitting Docs
+
+If you would like to help create better documentation, then that is seriously awesome. Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.
+
+The documentation for this project is split between the READMEs for Raspi IO and it's dependencies, and the wiki for Raspi IO. If you would like to help with any of the READMEs, create a pull request and submit it! If you would like to edit the wiki, drop into the gitter chat, or open an issue, and we'll grant you access so you can edit the wiki.
 
 ## Open Open Source
 
@@ -29,7 +54,7 @@ This project follows the [open open source philosophy](http://openopensource.org
 
 > Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
 
-In other words, you get automatic commit access to this project when you're first non-trivial pull request is landed, and are then considered a core contributor.
+In other words, you get automatic commit access to this project when you're first non-trivial pull request is landed, and are automatically considered a core contributor. This applies to both code contributions AND documentation contributions.
 
 ## Code of Conduct
 
@@ -88,7 +113,7 @@ If you feel you have been falsely or unfairly accused of violating this Code of 
 
 ### Contact Info
 
-If you need to report an incident, please email Bryan, a.k.a. nebrius, at bryan@theoreticalideations.com.
+If you need to report an incident, please email Bryan Hughes ([@nebrius](https://github.com/nebrius)), at bryan@theoreticalideations.com.
 
 ### Credit, License, and Attribution
 
