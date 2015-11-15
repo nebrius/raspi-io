@@ -292,11 +292,11 @@ class Raspi extends EventEmitter {
     const { pin, mode } = options;
     const normalizedPin = this.normalize(pin);
     const pinInstance = this[getPinInstance](normalizedPin);
-    const config = Object.assign(
-      { pullResistor: PULL_NONE },
-      options,
-      { pin: normalizedPin }
-    );
+    pinInstance.pullResistor = options.pullResistor || PULL_NONE;
+    const config = {
+      pin: normalizedPin,
+      pullResistor: pinInstance.pullResistor
+    };
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
     }
