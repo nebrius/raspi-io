@@ -7,15 +7,14 @@ Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspbe
 can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be
 found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, Model B+, and Raspberry Pi 2 Model B, but does _not_ support the Model A.
 
-If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](blob/master/CONTRIBUTING.md).
+If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](/CONTRIBUTING.md).
 
 ## System Requirements
 
 - Raspberry Pi Model B Rev 1 or newer (sorry Model A users)
-- Raspbian Wheezy 2015-05-05 or Raspbian Jesse
+- Raspbian Jesse
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
-- Node 0.10 or Node 0.12
-  - See https://github.com/nebrius/raspi-io/issues/35 for more info about Node 4 support
+- Node 0.10 or newer
 
 ## Installation
 
