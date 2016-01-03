@@ -65,6 +65,7 @@ const i2c = Symbol('i2c');
 const i2cDelay = Symbol('i2cDelay');
 const i2cRead = Symbol('i2cRead');
 const i2cCheckAlive = Symbol('i2cCheckAlive');
+const pinMode = Symbol('pinMode');
 
 class Raspi extends EventEmitter {
 
@@ -285,14 +286,13 @@ class Raspi extends EventEmitter {
   }
 
   pinMode(pin, mode) {
-    this._pinMode({ pin, mode });
+    this[pinMode]({ pin, mode });
   }
 
-  _pinMode(options) {
-    const { pin, mode } = options;
+  [pinMode]({ pin, mode, pullResistor = PULL_NONE }) {
     const normalizedPin = this.normalize(pin);
     const pinInstance = this[getPinInstance](normalizedPin);
-    pinInstance.pullResistor = options.pullResistor || PULL_NONE;
+    pinInstance.pullResistor = pullResistor;
     const config = {
       pin: normalizedPin,
       pullResistor: pinInstance.pullResistor
@@ -359,9 +359,9 @@ class Raspi extends EventEmitter {
   digitalWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode === INPUT_MODE && value === HIGH) {
-      this._pinMode({ pin, mode: INPUT_MODE, pullResistor: PULL_UP });
+      this[pinMode]({ pin, mode: INPUT_MODE, pullResistor: PULL_UP });
     } else if (pinInstance.mode != OUTPUT_MODE) {
-      this._pinMode({ pin, mode: OUTPUT_MODE });
+      this[pinMode]({ pin, mode: OUTPUT_MODE });
     }
     if (pinInstance.mode === OUTPUT_MODE && value != pinInstance.previousWrittenValue) {
       pinInstance.peripheral.write(value ? HIGH : LOW);
