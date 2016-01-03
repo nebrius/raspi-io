@@ -359,7 +359,7 @@ class Raspi extends EventEmitter {
   digitalWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode === INPUT_MODE && value === HIGH) {
-      this._pinMode({ pin, mode: INPUT_MODE, pullResistor: PULL_DOWN });
+      this._pinMode({ pin, mode: INPUT_MODE, pullResistor: PULL_UP });
     } else if (pinInstance.mode != OUTPUT_MODE) {
       this._pinMode({ pin, mode: OUTPUT_MODE });
     }
