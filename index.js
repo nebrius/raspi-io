@@ -27,7 +27,7 @@ import fs from 'fs';
 import { EventEmitter } from 'events';
 import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
-import { DigitalOutput, DigitalInput } from 'raspi-gpio';
+import { PULL_NONE, PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
@@ -65,7 +65,7 @@ const i2c = Symbol('i2c');
 const i2cDelay = Symbol('i2cDelay');
 const i2cRead = Symbol('i2cRead');
 const i2cCheckAlive = Symbol('i2cCheckAlive');
-
+const pinMode = Symbol('pinMode');
 
 class Raspi extends EventEmitter {
 
@@ -286,8 +286,17 @@ class Raspi extends EventEmitter {
   }
 
   pinMode(pin, mode) {
+    this[pinMode]({ pin, mode });
+  }
+
+  [pinMode]({ pin, mode, pullResistor = PULL_NONE }) {
     const normalizedPin = this.normalize(pin);
     const pinInstance = this[getPinInstance](normalizedPin);
+    pinInstance.pullResistor = pullResistor;
+    const config = {
+      pin: normalizedPin,
+      pullResistor: pinInstance.pullResistor
+    };
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
     }
@@ -296,10 +305,10 @@ class Raspi extends EventEmitter {
     } else {
       switch (mode) {
         case INPUT_MODE:
-          pinInstance.peripheral = new DigitalInput(normalizedPin);
+          pinInstance.peripheral = new DigitalInput(config);
           break;
         case OUTPUT_MODE:
-          pinInstance.peripheral = new DigitalOutput(normalizedPin);
+          pinInstance.peripheral = new DigitalOutput(config);
           break;
         case PWM_MODE:
         case SERVO_MODE:
@@ -349,10 +358,12 @@ class Raspi extends EventEmitter {
 
   digitalWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
-    if (pinInstance.mode != OUTPUT_MODE) {
-      this.pinMode(pin, OUTPUT_MODE);
+    if (pinInstance.mode === INPUT_MODE && value === HIGH) {
+      this[pinMode]({ pin, mode: INPUT_MODE, pullResistor: PULL_UP });
+    } else if (pinInstance.mode != OUTPUT_MODE) {
+      this[pinMode]({ pin, mode: OUTPUT_MODE });
     }
-    if (value != pinInstance.previousWrittenValue) {
+    if (pinInstance.mode === OUTPUT_MODE && value != pinInstance.previousWrittenValue) {
       pinInstance.peripheral.write(value ? HIGH : LOW);
       pinInstance.previousWrittenValue = value;
     }
