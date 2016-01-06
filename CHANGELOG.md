@@ -1,3 +1,8 @@
+## 5.2.0 (2016-1-6)
+
+- Added support for enabling pull up resistors by writing HIGH to the pin while in INPUT mode
+- Updated dependencies to add Ubuntu support
+
 ## 5.1.0 (2015-12-8)
 
 - Updated dependencies to add Raspberry Pi Zero support
