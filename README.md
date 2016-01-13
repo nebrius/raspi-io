@@ -12,7 +12,7 @@ If you have a bug report, feature request, or wish to contribute code, please be
 ## System Requirements
 
 - Raspberry Pi Model B Rev 1 or newer (sorry Model A users)
-- Raspbian Jesse
+- Raspbian Jessie
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - Node 0.10 or newer
 
@@ -24,7 +24,7 @@ Install with NPM:
 npm install raspi-io
 ```
 
-**Warning**: this module requires GCC 4.8 or newer. This means that you should be running Raspbian Jesse or newer, released in September of 2015.
+**Warning**: this module requires GCC 4.8 or newer. This means that you should be running Raspbian Jessie or newer, released in September of 2015.
 
 ## Usage
 
