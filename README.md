@@ -5,7 +5,7 @@ Raspi-io
 
 Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that
 can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be
-found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, Model B+, and Raspberry Pi 2 Model B, but does _not_ support the Model A.
+found on the [Johnny-Five Wiki](https://github.com/rwaldron/johnny-five/wiki/IO-Plugins). Raspi IO supports the Model B Rev 1, Model B Rev 2, Model A+, Model B+, Raspberry Pi 2 Model B, and Raspbery Pi Zero, but does _not_ support the Model A.
 
 If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](/CONTRIBUTING.md).
 
@@ -48,7 +48,7 @@ board.on('ready', function() {
 
 The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
-Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/bryan-m-hughes/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
+Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
 ## Pin Naming
 
