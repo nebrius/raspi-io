@@ -52,6 +52,9 @@ const HIGH = 1;
 
 const LED_PIN = -1;
 
+const DEFAULT_SERVO_MIN = 1000;
+const DEFAULT_SERVO_MAX = 2000;
+
 // Settings
 const DIGITAL_READ_UPDATE_RATE = 19;
 
@@ -180,7 +183,13 @@ class Raspi extends EventEmitter {
         const instance = this[instances][pin] = {
           peripheral: null,
           mode: supportedModes.indexOf(OUTPUT_MODE) == -1 ? UNKNOWN_MODE : OUTPUT_MODE,
-          previousWrittenValue: LOW
+
+          // Used to cache the previously written value for reading back in OUTPUT mode
+          previousWrittenValue: LOW,
+
+          // Used to set the default min and max values
+          min: DEFAULT_SERVO_MIN,
+          max: DEFAULT_SERVO_MAX
         };
         this[pins][pin] = Object.create(null, {
           supportedModes: {
@@ -327,11 +336,15 @@ class Raspi extends EventEmitter {
   }
 
   analogWrite(pin, value) {
+    this.pwmWrite(pin, value);
+  }
+
+  pwmWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != PWM_MODE) {
       this.pinMode(pin, PWM_MODE);
     }
-    pinInstance.peripheral.write(Math.round(value * 1000 / 255));
+    pinInstance.peripheral.write(Math.round(value * pinInstance.peripheral.range / 255));
   }
 
   digitalRead(pin, handler) {
@@ -369,12 +382,34 @@ class Raspi extends EventEmitter {
     }
   }
 
+  servoConfig(pin, min, max) {
+    let config = pin;
+    if (typeof config !== 'object') {
+      config = { pin, min, max };
+    }
+    if (typeof config.min !== 'number') {
+      config.min = DEFAULT_SERVO_MIN;
+    }
+    if (typeof config.max !== 'number') {
+      config.max = DEFAULT_SERVO_MAX;
+    }
+    const normalizedPin = this.normalize(pin);
+    this[pinMode]({
+      pin: normalizedPin,
+      mode: SERVO_MODE
+    });
+    const pinInstance = this[getPinInstance](this.normalize(normalizedPin));
+    pinInstance.min = config.min;
+    pinInstance.max = config.max;
+  }
+
   servoWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode != SERVO_MODE) {
       this.pinMode(pin, SERVO_MODE);
     }
-    pinInstance.peripheral.write(48 + Math.round(value * 48 / 180));
+    const dutyCycle = (pinInstance.min + (value / 180) * (pinInstance.max - pinInstance.min)) / 20000;
+    pinInstance.peripheral.write(dutyCycle * pinInstance.peripheral.range);
   }
 
   queryCapabilities(cb) {
@@ -527,6 +562,18 @@ class Raspi extends EventEmitter {
 
   sendI2CReadRequest(...rest) {
     return this.i2cReadOnce(...rest);
+  }
+
+  serialWrite() {
+    throw new Error('serialWrite is not yet implemented on the Raspberry Pi');
+  }
+
+  serialRead() {
+    throw new Error('serialRead is not yet implemented on the Raspberry Pi');
+  }
+
+  serialConfig() {
+    throw new Error('serialConfig is not yet implemented on the Raspberry Pi');
   }
 
   sendOneWireConfig() {

@@ -1,3 +1,9 @@
+## 5.3.0 (2016-2-19)
+
+- Added support for the `servoConfig` and `servoWrite` methods
+- Stubbed out the `serialWrite`, `serialRead`, and `serialConfig`
+    - For now, they throw a "not implemented" error
+
 ## 5.2.0 (2016-1-6)
 
 - Added support for enabling pull up resistors by writing HIGH to the pin while in INPUT mode
