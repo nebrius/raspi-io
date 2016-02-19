@@ -15,12 +15,12 @@
   ],
   "dependencies": {
     "raspi": "2.0.0",
-    "raspi-board": "3.0.0",
-    "raspi-gpio": "2.2.2",
-    "raspi-i2c": "3.0.0",
-    "raspi-led": "1.3.2",
-    "raspi-pwm": "3.0.0",
-    "raspi-serial": "1.3.1"
+    "raspi-board": "2.3.0",
+    "raspi-gpio": "2.1.0",
+    "raspi-i2c": "2.2.0",
+    "raspi-led": "1.2.0",
+    "raspi-pwm": "2.2.0",
+    "raspi-sonar": "1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

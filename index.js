@@ -31,7 +31,14 @@ import { PULL_NONE, PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'rasp
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
-import { Serial, DEFAULT_PORT } from 'raspi-serial';
+import { Sonar } from 'raspi-sonar';
+
+// Hacky quick Symbol polyfill, since es6-symbol refuses to install with Node 0.10 from http://node-arm.herokuapp.com/
+if (typeof global.Symbol != 'function') {
+  global.Symbol = (name) => {
+    return '__$raspi_symbol_' + name + '_' + Math.round(Math.random() * 0xFFFFFFF) + '$__';
+  };
+}
 
 // Constants
 const INPUT_MODE = 0;
@@ -788,8 +795,23 @@ class Raspi extends EventEmitter {
     throw new Error('reportDigitalPin is not yet implemented');
   }
 
-  pingRead() {
-    throw new Error('pingRead is not yet implemented');
+  pingRead(config, handler) {
+    const pulseOut = config.pulseOut;
+    const pin = config.pin;
+    const sonar = new Sonar(config.pin);
+    
+    const pinInstance = this[getPinInstance](this.normalize(pin));
+    if (pinInstance.mode != INPUT_MODE) {
+      this.pinMode(pin, INPUT_MODE);
+    }
+    
+    const interval = setInterval(() => {
+      sonar.read(handler);
+    }, pulseOut);
+    
+    pinInstance.peripheral.on('destroyed', () => {
+      clearInterval(interval);
+    });
   }
 
   pulseIn() {
