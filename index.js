@@ -46,6 +46,7 @@ const OUTPUT_MODE = 1;
 const ANALOG_MODE = 2;
 const PWM_MODE = 3;
 const SERVO_MODE = 4;
+const PING_READ_MODE = 98;
 const UNKNOWN_MODE = 99;
 
 const LOW = 0;
@@ -378,6 +379,9 @@ class Raspi extends EventEmitter {
         case PWM_MODE:
         case SERVO_MODE:
           pinInstance.peripheral = new PWM(normalizedPin);
+          break;
+        case PING_READ_MODE:
+          pinInstance.peripheral = new Sonar(normalizedPin);
           break;
         default:
           console.warn(`Unknown pin mode: ${mode}`);
@@ -784,46 +788,40 @@ class Raspi extends EventEmitter {
   }
 
   setSamplingInterval() {
-    throw new Error('setSamplingInterval is not yet implemented');
+    throw new Error('setSamplingInterval is not yet implemented on the Raspberry Pi');
   }
 
   reportAnalogPin() {
-    throw new Error('reportAnalogPin is not yet implemented');
+    throw new Error('reportAnalogPin is not yet implemented on the Raspberry Pi');
   }
 
   reportDigitalPin() {
-    throw new Error('reportDigitalPin is not yet implemented');
+    throw new Error('reportDigitalPin is not yet implemented on the Raspberry Pi');
   }
 
   pingRead(config, handler) {
-    const pulseOut = config.pulseOut;
     const pin = config.pin;
-    const sonar = new Sonar(config.pin);
     
     const pinInstance = this[getPinInstance](this.normalize(pin));
-    if (pinInstance.mode != INPUT_MODE) {
-      this.pinMode(pin, INPUT_MODE);
+    if (pinInstance.mode != PING_READ_MODE) {
+      this.pinMode(pin, PING_READ_MODE);
     }
     
-    const interval = setInterval(() => {
-      sonar.read(handler);
-    }, pulseOut);
-    
-    pinInstance.peripheral.on('destroyed', () => {
-      clearInterval(interval);
+    setImmediate(() => {
+      pinInstance.peripheral.read(handler);
     });
   }
 
   pulseIn() {
-    throw new Error('pulseIn is not yet implemented');
+    throw new Error('pulseIn is not yet implemented on the Raspberry Pi');
   }
 
   stepperConfig() {
-    throw new Error('stepperConfig is not yet implemented');
+    throw new Error('stepperConfig is not yet implemented on the Raspberry Pi');
   }
 
   stepperStep() {
-    throw new Error('stepperStep is not yet implemented');
+    throw new Error('stepperStep is not yet implemented on the Raspberry Pi');
   }
 }
 
