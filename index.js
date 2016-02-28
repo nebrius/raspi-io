@@ -808,7 +808,10 @@ class Raspi extends EventEmitter {
     }
     
     setImmediate(() => {
-      pinInstance.peripheral.read(handler);
+      pinInstance.peripheral.read(function callback(duration) {
+        handler(duration);
+        this.emit('ping-read-' + pin, duration);
+      });
     });
   }
 
