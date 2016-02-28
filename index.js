@@ -223,7 +223,7 @@ class Raspi extends EventEmitter {
           if (pin == LED_PIN) {
             supportedModes.push(OUTPUT_MODE);
           } else if (pinInfo.peripherals.indexOf('gpio') != -1) {
-            supportedModes.push(INPUT_MODE, OUTPUT_MODE);
+            supportedModes.push(INPUT_MODE, OUTPUT_MODE, PING_READ_MODE);
           }
           if (pinInfo.peripherals.indexOf('pwm') != -1) {
             supportedModes.push(PWM_MODE, SERVO_MODE);
@@ -807,12 +807,12 @@ class Raspi extends EventEmitter {
       this.pinMode(pin, PING_READ_MODE);
     }
     
-    setImmediate(() => {
+    setImmediate((thisRef) => {
       pinInstance.peripheral.read(function callback(duration) {
         handler(duration);
-        this.emit('ping-read-' + pin, duration);
+        thisRef.emit('ping-read-' + pin, duration);
       });
-    });
+    }, this);
   }
 
   pulseIn() {
