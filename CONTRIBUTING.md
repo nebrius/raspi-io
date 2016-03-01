@@ -31,7 +31,7 @@ Raspi IO uses a modular architecture, and is composed of several different NPM p
 
 Check out the [Raspi.js](https://github.com/nebrius/raspi) repository for more information on Raspi.js.
 
-There are 8 package total that make up Raspi.js:
+There are 8 packages total that make up Raspi.js:
 
 - [raspi](https://github.com/nebrius/raspi): This is the main package, analagous to the `express` package. It doesn't actually control any hardware on its own, it's only purpose is to handle initialization.
 - [raspi-wiringpi](https://github.com/nebrius/raspi-wiringpi): This is a support package, of sorts. It wraps up Wiring Pi into something that can be installed from NPM.
@@ -44,7 +44,7 @@ There are 8 package total that make up Raspi.js:
 
 ## Submitting Docs
 
-If you would like to help create better documentation, then that is seriously awesome. Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.
+If you would like to help create better documentation, then that is seriously awesome! Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.
 
 The documentation for this project is split between the READMEs for Raspi IO and it's dependencies, and the wiki for Raspi IO. If you would like to help with any of the READMEs, create a pull request and submit it! If you would like to edit the wiki, drop into the gitter chat, or open an issue, and we'll grant you access so you can edit the wiki.
 
@@ -54,7 +54,7 @@ This project follows the [open open source philosophy](http://openopensource.org
 
 > Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
 
-In other words, you get automatic commit access to this project when you're first non-trivial pull request is landed, and are automatically considered a core contributor. This applies to both code contributions AND documentation contributions.
+In other words, you get automatic commit access to this project when you're first non-trivial pull request or wiki edit is landed, and are automatically considered a core contributor. This applies to both code contributions AND documentation contributions.
 
 ## Code of Conduct
 
