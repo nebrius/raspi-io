@@ -1,3 +1,7 @@
+## 5.4.0 (2016-4-4)
+
+- Updated dependencies to add Raspberry Pi 3 Model B support
+
 ## 5.3.0 (2016-2-19)
 
 - Added support for the `servoConfig` and `servoWrite` methods
