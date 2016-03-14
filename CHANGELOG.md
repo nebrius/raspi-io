@@ -1,3 +1,9 @@
+## 6.0.0 (2016-
+
+- Added support for the `serial*` methods
+  - BREAKING CHANGE: `GPIO14` and `GPIO15` are no longer accessible from raspi-io
+- BREAKING CHANGE: Dropped support for Node.js 0.10.x
+
 ## 5.4.1 (2016-3-7)
 
 - Dependency update to add missing Raspberry Pi 3 Model B revision

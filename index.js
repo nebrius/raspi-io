@@ -31,13 +31,7 @@ import { PULL_NONE, PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'rasp
 import { PWM } from 'raspi-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
-
-// Hacky quick Symbol polyfill, since es6-symbol refuses to install with Node 0.10 from http://node-arm.herokuapp.com/
-if (typeof global.Symbol != 'function') {
-  global.Symbol = (name) => {
-    return '__$raspi_symbol_' + name + '_' + Math.round(Math.random() * 0xFFFFFFF) + '$__';
-  };
-}
+import { Serial, DEFAULT_PORT } from 'raspi-serial';
 
 // Constants
 const INPUT_MODE = 0;
@@ -52,10 +46,9 @@ const HIGH = 1;
 
 const LED_PIN = -1;
 
+// Settings
 const DEFAULT_SERVO_MIN = 1000;
 const DEFAULT_SERVO_MAX = 2000;
-
-// Settings
 const DIGITAL_READ_UPDATE_RATE = 19;
 
 // Private symbols
@@ -69,6 +62,15 @@ const i2cDelay = Symbol('i2cDelay');
 const i2cRead = Symbol('i2cRead');
 const i2cCheckAlive = Symbol('i2cCheckAlive');
 const pinMode = Symbol('pinMode');
+const serial = Symbol('serial');
+const serialQueue = Symbol('serialQueue');
+const serialPump = Symbol('serialPump');
+const isSerialProcessing = Symbol('isSerialProcessing');
+
+const SERIAL_ACTION_WRITE = 'SERIAL_ACTION_WRITE';
+const SERIAL_ACTION_CLOSE = 'SERIAL_ACTION_CLOSE';
+const SERIAL_ACTION_FLUSH = 'SERIAL_ACTION_FLUSH';
+const SERIAL_ACTION_CONFIG = 'SERIAL_ACTION_CONFIG';
 
 class Raspi extends EventEmitter {
 
@@ -129,6 +131,20 @@ class Raspi extends EventEmitter {
         value: 0
       },
 
+      [serial]: {
+        writable: true,
+        value: new Serial()
+      },
+
+      [serialQueue]: {
+        value: []
+      },
+
+      [isSerialProcessing]: {
+        writable: true,
+        value: false
+      },
+
       MODES: {
         enumerable: true,
         value: Object.freeze({
@@ -152,7 +168,11 @@ class Raspi extends EventEmitter {
       defaultLed: {
         enumerable: true,
         value: LED_PIN
-      }
+      },
+
+      SERIAL_PORT_IDs: Object.freeze({
+        SW_SERIAL0: DEFAULT_PORT
+      })
     });
 
     init(() => {
@@ -170,7 +190,7 @@ class Raspi extends EventEmitter {
         const supportedModes = [];
         // We don't want I2C to be used for anything else, since changing the
         // pin mode makes it unable to ever do I2C again.
-        if (pinInfo.peripherals.indexOf('i2c') == -1) {
+        if (pinInfo.peripherals.indexOf('i2c') == -1 && pinInfo.peripherals.indexOf('uart') !== -1) {
           if (pin == LED_PIN) {
             supportedModes.push(OUTPUT_MODE);
           } else if (pinInfo.peripherals.indexOf('gpio') != -1) {
@@ -267,6 +287,11 @@ class Raspi extends EventEmitter {
           });
         }
       }
+
+      this.serialConfig({
+        portId: DEFAULT_PORT,
+        baud: 9600
+      });
 
       this[isReady] = true;
       this.emit('ready');
@@ -564,16 +589,105 @@ class Raspi extends EventEmitter {
     return this.i2cReadOnce(...rest);
   }
 
-  serialWrite() {
-    throw new Error('serialWrite is not yet implemented on the Raspberry Pi');
+  serialWrite(portId, inBytes) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    this[serialQueue].push({
+      type: SERIAL_ACTION_WRITE,
+      inBytes
+    });
+    this[serialPump]();
   }
 
-  serialRead() {
-    throw new Error('serialRead is not yet implemented on the Raspberry Pi');
+  serialRead(portId, maxBytesToRead, handler) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    // TODO: add support for maxBytesToRead
+    if (typeof maxBytesToRead === 'function') {
+      handler = maxBytesToRead;
+      maxBytesToRead = undefined;
+    }
+    this[serial].on('data', handler);
   }
 
-  serialConfig() {
-    throw new Error('serialConfig is not yet implemented on the Raspberry Pi');
+  serialConfig({ portId, baud }) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    if (baud && baud !== this[serial].baudRate) {
+      this[serial].close(() => {
+        this[serial] = new Serial({
+          baudRate: baud
+        });
+        this[serial] = new Serial({
+          baudRate: baud
+        });
+        this[serial].open(() => {
+          this[serialPump]();
+        });
+      });
+    }
+  }
+
+  serialStop(portId) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    this[serial].removeAllListeners();
+  }
+
+/*
+serialClose(portId)
+
+    Close the specified serial portId.
+*/
+  serialClose(portId) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    if (this[isSerialClosing]) {
+      return;
+    }
+    this[isSerialClosing] = true;
+    this[serial].close(() => {
+      this[isSerialClosing] = false;
+    });
+
+    throw new Error('serialClose is not yet implemented on the Raspberry Pi');
+  }
+
+  serialFlush(portId) {
+    if (portId !== DEFAULT_PORT) {
+      throw new Error(`Invalid serial port "${portId}"`);
+    }
+    if (this[isSerialFlushing]) {
+      return;
+    }
+    this[isSerialFlushing] = true;
+    this[serial].flush(() => {
+      this[isSerialFlushing] = false;
+    })
+  }
+
+  [serialPump]() {
+    if (this[isSerialProcessing] || !this[serialQueue].length) {
+      return;
+    }
+    const action = this[serialQueue].shift();
+    switch (action.type) {
+      case SERIAL_ACTION_WRITE:
+        break;
+      case SERIAL_ACTION_CONFIG:
+        break;
+      case SERIAL_ACTION_CLOSE:
+        break;
+      case SERIAL_ACTION_FLUSH:
+        break;
+      default:
+        throw new Error('Internal error: unknown serial action type');
+    }
   }
 
   sendOneWireConfig() {
