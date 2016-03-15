@@ -64,6 +64,7 @@ const i2cCheckAlive = Symbol('i2cCheckAlive');
 const pinMode = Symbol('pinMode');
 const serial = Symbol('serial');
 const serialQueue = Symbol('serialQueue');
+const addToSerialQueue = Symbol('addToSerialQueue');
 const serialPump = Symbol('serialPump');
 const isSerialProcessing = Symbol('isSerialProcessing');
 
@@ -71,6 +72,8 @@ const SERIAL_ACTION_WRITE = 'SERIAL_ACTION_WRITE';
 const SERIAL_ACTION_CLOSE = 'SERIAL_ACTION_CLOSE';
 const SERIAL_ACTION_FLUSH = 'SERIAL_ACTION_FLUSH';
 const SERIAL_ACTION_CONFIG = 'SERIAL_ACTION_CONFIG';
+const SERIAL_ACTION_READ = 'SERIAL_ACTION_READ';
+const SERIAL_ACTION_STOP = 'SERIAL_ACTION_STOP';
 
 class Raspi extends EventEmitter {
 
@@ -141,6 +144,11 @@ class Raspi extends EventEmitter {
       },
 
       [isSerialProcessing]: {
+        writable: true,
+        value: false
+      },
+
+      [isSerialOpen]: {
         writable: true,
         value: false
       },
@@ -589,86 +597,64 @@ class Raspi extends EventEmitter {
     return this.i2cReadOnce(...rest);
   }
 
-  serialWrite(portId, inBytes) {
-    if (portId !== DEFAULT_PORT) {
-      throw new Error(`Invalid serial port "${portId}"`);
-    }
-    this[serialQueue].push({
-      type: SERIAL_ACTION_WRITE,
-      inBytes
-    });
-    this[serialPump]();
-  }
-
-  serialRead(portId, maxBytesToRead, handler) {
-    if (portId !== DEFAULT_PORT) {
-      throw new Error(`Invalid serial port "${portId}"`);
-    }
-    // TODO: add support for maxBytesToRead
-    if (typeof maxBytesToRead === 'function') {
-      handler = maxBytesToRead;
-      maxBytesToRead = undefined;
-    }
-    this[serial].on('data', handler);
-  }
-
   serialConfig({ portId, baud }) {
-    if (portId !== DEFAULT_PORT) {
-      throw new Error(`Invalid serial port "${portId}"`);
-    }
     if (baud && baud !== this[serial].baudRate) {
-      this[serial].close(() => {
-        this[serial] = new Serial({
-          baudRate: baud
-        });
-        this[serial] = new Serial({
-          baudRate: baud
-        });
-        this[serial].open(() => {
-          this[serialPump]();
-        });
+      this[addToSerialQueue]({
+        type: SERIAL_ACTION_CONFIG,
+        portId,
+        baud
       });
     }
   }
 
-  serialStop(portId) {
-    if (portId !== DEFAULT_PORT) {
-      throw new Error(`Invalid serial port "${portId}"`);
-    }
-    this[serial].removeAllListeners();
+  serialWrite(portId, inBytes) {
+    this[addToSerialQueue]({
+      type: SERIAL_ACTION_WRITE,
+      portId,
+      inBytes
+    });
   }
 
-/*
-serialClose(portId)
-
-    Close the specified serial portId.
-*/
-  serialClose(portId) {
-    if (portId !== DEFAULT_PORT) {
-      throw new Error(`Invalid serial port "${portId}"`);
+  serialRead(portId, maxBytesToRead, handler) {
+    if (typeof maxBytesToRead === 'function') {
+      handler = maxBytesToRead;
+      maxBytesToRead = undefined;
     }
-    if (this[isSerialClosing]) {
-      return;
-    }
-    this[isSerialClosing] = true;
-    this[serial].close(() => {
-      this[isSerialClosing] = false;
+    this[addToSerialQueue]({
+      type: SERIAL_ACTION_READ,
+      portId,
+      maxBytesToRead,
+      handler
     });
+  }
 
-    throw new Error('serialClose is not yet implemented on the Raspberry Pi');
+  serialStop(portId) {
+    this[addToSerialQueue]({
+      type: SERIAL_ACTION_STOP,
+      portId
+    });
+  }
+
+  serialClose(portId) {
+    this[addToSerialQueue]({
+      type: SERIAL_ACTION_CLOSE,
+      portId
+    });
   }
 
   serialFlush(portId) {
-    if (portId !== DEFAULT_PORT) {
+    this[addToSerialQueue]({
+      type: SERIAL_ACTION_FLUSH,
+      portId
+    });
+  }
+
+  [addToSerialQueue](action) {
+    if (action.portId !== DEFAULT_PORT) {
       throw new Error(`Invalid serial port "${portId}"`);
     }
-    if (this[isSerialFlushing]) {
-      return;
-    }
-    this[isSerialFlushing] = true;
-    this[serial].flush(() => {
-      this[isSerialFlushing] = false;
-    })
+    this[serialQueue].push(action);
+    this[serialPump]();
   }
 
   [serialPump]() {
@@ -676,15 +662,42 @@ serialClose(portId)
       return;
     }
     const action = this[serialQueue].shift();
+    const finalize = () => {
+      this[serialPump]();
+    };
     switch (action.type) {
       case SERIAL_ACTION_WRITE:
+        this[serial].write(action.inBytes, finalize);
         break;
+
+      case SERIAL_ACTION_READ:
+        // TODO: add support for action.maxBytesToRead
+        this[serial].on('data', action.handler);
+        process.nextTick(finalize);
+        break;
+
+      case SERIAL_ACTION_STOP:
+        this[serial].removeAllListeners();
+        process.nextTick(finalize);
+        break;
+
       case SERIAL_ACTION_CONFIG:
+        this[serial].close(() => {
+          this[serial] = new Serial({
+            baudRate: action.baud
+          });
+          this[serial].open(finalize);
+        });
         break;
+
       case SERIAL_ACTION_CLOSE:
+        this[serial].close(finalize);
         break;
+
       case SERIAL_ACTION_FLUSH:
+        this[serial].flush(finalize);
         break;
+
       default:
         throw new Error('Internal error: unknown serial action type');
     }
