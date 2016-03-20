@@ -67,6 +67,7 @@ const serialQueue = Symbol('serialQueue');
 const addToSerialQueue = Symbol('addToSerialQueue');
 const serialPump = Symbol('serialPump');
 const isSerialProcessing = Symbol('isSerialProcessing');
+const isSerialOpen = Symbol('isSerialOpen');
 
 const SERIAL_ACTION_WRITE = 'SERIAL_ACTION_WRITE';
 const SERIAL_ACTION_CLOSE = 'SERIAL_ACTION_CLOSE';
@@ -178,9 +179,13 @@ class Raspi extends EventEmitter {
         value: LED_PIN
       },
 
-      SERIAL_PORT_IDs: Object.freeze({
-        SW_SERIAL0: DEFAULT_PORT
-      })
+      SERIAL_PORT_IDs: {
+        enumerable: true,
+        value: Object.freeze({
+          HW_SERIAL0: DEFAULT_PORT,
+          DEFAULT: DEFAULT_PORT
+        })
+      }
     });
 
     init(() => {
@@ -198,7 +203,7 @@ class Raspi extends EventEmitter {
         const supportedModes = [];
         // We don't want I2C to be used for anything else, since changing the
         // pin mode makes it unable to ever do I2C again.
-        if (pinInfo.peripherals.indexOf('i2c') == -1 && pinInfo.peripherals.indexOf('uart') !== -1) {
+        if (pinInfo.peripherals.indexOf('i2c') == -1 && pinInfo.peripherals.indexOf('uart') == -1) {
           if (pin == LED_PIN) {
             supportedModes.push(OUTPUT_MODE);
           } else if (pinInfo.peripherals.indexOf('gpio') != -1) {
@@ -598,7 +603,7 @@ class Raspi extends EventEmitter {
   }
 
   serialConfig({ portId, baud }) {
-    if (baud && baud !== this[serial].baudRate) {
+    if (!this[isSerialOpen] || (baud && baud !== this[serial].baudRate)) {
       this[addToSerialQueue]({
         type: SERIAL_ACTION_CONFIG,
         portId,
@@ -661,22 +666,33 @@ class Raspi extends EventEmitter {
     if (this[isSerialProcessing] || !this[serialQueue].length) {
       return;
     }
+    this[isSerialProcessing] = true;
     const action = this[serialQueue].shift();
     const finalize = () => {
+      this[isSerialProcessing] = false;
       this[serialPump]();
     };
     switch (action.type) {
       case SERIAL_ACTION_WRITE:
+        if (!this[isSerialOpen]) {
+          throw new Error('Cannot write to closed serial port');
+        }
         this[serial].write(action.inBytes, finalize);
         break;
 
       case SERIAL_ACTION_READ:
+        if (!this[isSerialOpen]) {
+          throw new Error('Cannot read from closed serial port');
+        }
         // TODO: add support for action.maxBytesToRead
         this[serial].on('data', action.handler);
         process.nextTick(finalize);
         break;
 
       case SERIAL_ACTION_STOP:
+        if (!this[isSerialOpen]) {
+          throw new Error('Cannot stop closed serial port');
+        }
         this[serial].removeAllListeners();
         process.nextTick(finalize);
         break;
@@ -686,15 +702,24 @@ class Raspi extends EventEmitter {
           this[serial] = new Serial({
             baudRate: action.baud
           });
-          this[serial].open(finalize);
+          this[serial].open(() => {
+            this[isSerialOpen] = true;
+            finalize();
+          });
         });
         break;
 
       case SERIAL_ACTION_CLOSE:
-        this[serial].close(finalize);
+        this[serial].close(() => {
+          this[isSerialOpen] = false;
+          finalize();
+        });
         break;
 
       case SERIAL_ACTION_FLUSH:
+        if (!this[isSerialOpen]) {
+          throw new Error('Cannot flush closed serial port');
+        }
         this[serial].flush(finalize);
         break;
 
