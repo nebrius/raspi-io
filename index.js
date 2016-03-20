@@ -76,6 +76,14 @@ const SERIAL_ACTION_CONFIG = 'SERIAL_ACTION_CONFIG';
 const SERIAL_ACTION_READ = 'SERIAL_ACTION_READ';
 const SERIAL_ACTION_STOP = 'SERIAL_ACTION_STOP';
 
+function bufferToArray(buffer) {
+  const array = Array(buffer.length);
+  for (let i = 0; i < buffer.length; i++) {
+    array[i] = buffer[i];
+  }
+  return array;
+}
+
 class Raspi extends EventEmitter {
 
   constructor() {
@@ -685,7 +693,9 @@ class Raspi extends EventEmitter {
           throw new Error('Cannot read from closed serial port');
         }
         // TODO: add support for action.maxBytesToRead
-        this[serial].on('data', action.handler);
+        this[serial].on('data', (data) => {
+          action.handler(bufferToArray(data));
+        });
         process.nextTick(finalize);
         break;
 
@@ -703,6 +713,9 @@ class Raspi extends EventEmitter {
             baudRate: action.baud
           });
           this[serial].open(() => {
+            this[serial].on('data', (data) => {
+              this.emit(`serial-data-${action.portId}`, bufferToArray(data));
+            });
             this[isSerialOpen] = true;
             finalize();
           });
