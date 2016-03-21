@@ -1,3 +1,7 @@
+## 6.0.1 (2016-3-20)
+
+- Fixed a bug where unknown pins threw the error 'Unknown pin "null"', which wasn't very helpful
+
 ## 6.0.0 (2016-3-20)
 
 - Added support for the `serial*` methods

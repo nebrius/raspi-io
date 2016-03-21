@@ -326,7 +326,7 @@ class Raspi extends EventEmitter {
 
   normalize(pin) {
     const normalizedPin = getPinNumber(pin);
-    if (typeof normalizedPin == 'undefined') {
+    if (typeof normalizedPin !== 'number') {
       throw new Error(`Unknown pin "${pin}"`);
     }
     return normalizedPin;
