@@ -3,8 +3,9 @@
     "node": true,
     "es6": true
   },
-  "ecmaFeatures": {
-    "modules": true
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
   },
   "rules": {
     "eqeqeq": 0,
@@ -18,7 +19,6 @@
     "no-constant-condition": 1,
     "no-dupe-keys": 2,
     "no-duplicate-case": 2,
-    "no-empty": 2,
     "no-ex-assign": 2,
     "no-extra-boolean-cast": 1,
     "no-extra-semi": 2,
@@ -27,7 +27,6 @@
     "default-case": 2,
     "guard-for-in": 2,
     "no-floating-decimal": 2,
-    "no-param-reassign": 2,
     "no-self-compare": 2,
     "no-sequences": 2,
     "no-throw-literal": 2,
@@ -40,7 +39,7 @@
     "no-nested-ternary": 2,
     "one-var": [2, "never"],
     "padded-blocks": [2, "never"],
-    "space-after-keywords": [2, "always"],
+    "keyword-spacing": 2,
     "no-console": 0,
     "space-before-blocks": 2,
     "space-before-function-paren": [2, "never"],
@@ -49,7 +48,6 @@
     "no-unreachable": 2,
     "no-unexpected-multiline": 2,
     "no-else-return": 2,
-    "no-throw-literal": 2,
     "constructor-super": 2,
     "no-this-before-super": 2,
     "object-shorthand": [2, "always"],

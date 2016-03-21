@@ -15,9 +15,9 @@ When submitting a bug report, please include the following information:
 
 ## Submitting Code
 
-All code is written in ECMAScript 2015 (previously known as ECMAscript 6 or ES6). We use Babel to compile the code to ES5 and have a gulpfile to handle the translation.
+All code is written in ECMAScript 2015 (previously known as ECMAscript 6 or ES6). We use ESLint to lint the code, and Babel to compile the code to ES5.
 
-To build the project, first install gulp, if you have not already, by running ```npm install -g gulp```. The run ```gulp``` from the top level directory of this repository.
+To build the project,  run ```npm run build``` from the top level directory of this repository.
 
 The first step in the compile process lints the code to check for issues and to ensure code style conformity. The goal of code linting is to make the pull request process easier (and make sure that Bryan doesn't do something silly 😄).
 
