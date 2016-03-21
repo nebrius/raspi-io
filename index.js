@@ -327,7 +327,7 @@ class Raspi extends EventEmitter {
   normalize(pin) {
     const normalizedPin = getPinNumber(pin);
     if (typeof normalizedPin == 'undefined') {
-      throw new Error('Unknown pin "' + pin + '"');
+      throw new Error(`Unknown pin "${pin}"`);
     }
     return normalizedPin;
   }
@@ -335,7 +335,7 @@ class Raspi extends EventEmitter {
   [getPinInstance](pin) {
     const pinInstance = this[instances][pin];
     if (!pinInstance) {
-      throw new Error('Unknown pin "' + pin + '"');
+      throw new Error(`Unknown pin "${pin}"`);
     }
     return pinInstance;
   }
@@ -353,9 +353,12 @@ class Raspi extends EventEmitter {
       pullResistor: pinInstance.pullResistor
     };
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
-      throw new Error('Pin "' + pin + '" does not support mode "' + mode + '"');
+      throw new Error(`Pin "${pin}" does not support mode "${mode}"`);
     }
-    if (pin == LED_PIN && !(pinInstance.peripheral instanceof LED)) {
+    if (pin == LED_PIN) {
+      if (pinInstance.peripheral instanceof LED) {
+        return;
+      }
       pinInstance.peripheral = new LED();
     } else {
       switch (mode) {
@@ -370,7 +373,7 @@ class Raspi extends EventEmitter {
           pinInstance.peripheral = new PWM(normalizedPin);
           break;
         default:
-          console.warn('Unknown pin mode: ' + mode);
+          console.warn(`Unknown pin mode: ${mode}`);
           break;
       }
     }
@@ -408,7 +411,7 @@ class Raspi extends EventEmitter {
       if (handler) {
         handler(value);
       }
-      this.emit('digital-read-' + pin, value);
+      this.emit(`digital-read-${pin}`, value);
     }, DIGITAL_READ_UPDATE_RATE);
     pinInstance.peripheral.on('destroyed', () => {
       clearInterval(interval);
@@ -559,7 +562,7 @@ class Raspi extends EventEmitter {
 
     callback = typeof callback === 'function' ? callback : () => {};
 
-    let event = 'I2C-reply' + address + '-';
+    let event = `i2c-reply-${address}-`;
     event += register !== null ? register : 0;
 
     const read = () => {

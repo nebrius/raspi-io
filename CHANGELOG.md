@@ -1,8 +1,12 @@
-## 6.0.0 (2016-
+## 6.0.0 (2016-3-20)
 
 - Added support for the `serial*` methods
   - BREAKING CHANGE: `GPIO14` and `GPIO15` are no longer accessible from raspi-io
-- BREAKING CHANGE: Dropped support for Node.js 0.10.x
+- Removed the Symbol shim
+  - BREAKING CHANGE: Node 0.10 is no longer supported
+- Fixed a bug where I2C reads emitted the wrong event name
+  - It was `I2C-reply${address}-${register}`, but is now `i2c-reply-${address}-${register}`
+- Fixed a bug where the built-in LED no longer worked
 
 ## 5.4.1 (2016-3-7)
 
