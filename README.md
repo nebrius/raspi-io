@@ -19,6 +19,8 @@ If you have a bug report, feature request, or wish to contribute code, please be
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
+#### Warning: this module must be installed as a normal user, but run as the root user
+
 ## Installation
 
 Install with NPM:
