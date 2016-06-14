@@ -51,6 +51,8 @@ board.on('ready', function() {
 
 The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
+*Warning:* this module _must_ be run as root, even though it cannot be installed as root.
+
 Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
 ## Pin Naming
