@@ -15,7 +15,11 @@ If you have a bug report, feature request, or wish to contribute code, please be
 - Raspbian Jessie
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - GCC 4.8 or newer
-- Node 0.10 or newer
+- Node 0.12 or newer
+
+Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
+
+#### Warning: this module must be installed as a normal user, but run as the root user
 
 ## Installation
 
@@ -48,6 +52,8 @@ board.on('ready', function() {
 ```
 
 The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
+
+*Warning:* this module _must_ be run as root, even though it cannot be installed as root.
 
 Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
