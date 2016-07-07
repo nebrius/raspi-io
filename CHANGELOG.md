@@ -1,3 +1,8 @@
+## 6.1.0 (2016-7-7)
+
+- Switched dependency ranges to ^
+- Bumped dependencies to bring in support for a new Raspberry Pi Zero revision
+
 ## 6.0.1 (2016-3-20)
 
 - Fixed a bug where unknown pins threw the error 'Unknown pin "null"', which wasn't very helpful
