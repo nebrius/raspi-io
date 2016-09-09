@@ -29,6 +29,7 @@ import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { PULL_NONE, PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
+import { SoftPWM } from 'raspi-soft-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
 import { Serial, DEFAULT_PORT } from 'raspi-serial';
@@ -39,6 +40,7 @@ const OUTPUT_MODE = 1;
 const ANALOG_MODE = 2;
 const PWM_MODE = 3;
 const SERVO_MODE = 4;
+const SOFT_PWM_MODE = 82;
 const UNKNOWN_MODE = 99;
 
 const LOW = 0;
@@ -352,9 +354,14 @@ class Raspi extends EventEmitter {
       pin: normalizedPin,
       pullResistor: pinInstance.pullResistor
     };
-    if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
+    const isModeSupported = this[pins][normalizedPin].supportedModes.indexOf(mode) > -1;
+
+    if (mode === PWM_MODE && isModeSupported === false) {
+      mode = SOFT_PWM_MODE;
+    } else if (isModeSupported === false) {
       throw new Error(`Pin "${pin}" does not support mode "${mode}"`);
     }
+
     if (pin == LED_PIN) {
       if (pinInstance.peripheral instanceof LED) {
         return;
@@ -371,6 +378,11 @@ class Raspi extends EventEmitter {
         case PWM_MODE:
         case SERVO_MODE:
           pinInstance.peripheral = new PWM(normalizedPin);
+          break;
+        case SOFT_PWM_MODE:
+          pinInstance.peripheral = new SoftPWM({
+            pin: normalizedPin, value: 0, range: 255
+          });
           break;
         default:
           console.warn(`Unknown pin mode: ${mode}`);
@@ -390,7 +402,7 @@ class Raspi extends EventEmitter {
 
   pwmWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
-    if (pinInstance.mode != PWM_MODE) {
+    if (pinInstance.mode != PWM_MODE || pinInstance.mode != SOFT_PWM_MODE) {
       this.pinMode(pin, PWM_MODE);
     }
     pinInstance.peripheral.write(Math.round(value * pinInstance.peripheral.range / 255));
