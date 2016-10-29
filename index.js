@@ -504,7 +504,7 @@ class Raspi extends EventEmitter {
 
     this[i2cCheckAlive]();
 
-    this[i2cDelay] = delay || 0;
+    this[i2cDelay] = Math.round((delay || 0) / 1000);
 
     return this;
   }
