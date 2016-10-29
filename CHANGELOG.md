@@ -2,6 +2,7 @@
 
 - Updated dependencies to bring in new functionality
 - Fixed a bug where `i2cConfig` treated the delay as milliseconds instead of seconds
+- Added support for enabling pull down resistors
 
 ## 6.1.0 (2016-7-7)
 
