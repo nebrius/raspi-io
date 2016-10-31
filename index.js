@@ -40,7 +40,6 @@ const OUTPUT_MODE = 1;
 const ANALOG_MODE = 2;
 const PWM_MODE = 3;
 const SERVO_MODE = 4;
-const SOFT_PWM_MODE = 82;
 const UNKNOWN_MODE = 99;
 
 const LOW = 0;
@@ -58,6 +57,7 @@ const isReady = Symbol('isReady');
 const pins = Symbol('pins');
 const instances = Symbol('instances');
 const analogPins = Symbol('analogPins');
+const isHardwarePwm = Symbol('isHardwarePwm');
 const getPinInstance = Symbol('getPinInstance');
 const i2c = Symbol('i2c');
 const i2cDelay = Symbol('i2cDelay');
@@ -88,8 +88,10 @@ function bufferToArray(buffer) {
 
 class Raspi extends EventEmitter {
 
-  constructor() {
+  constructor(opts={}) {
     super();
+
+    const { enableSoftPwm=false } = opts;
 
     Object.defineProperties(this, {
       name: {
@@ -221,6 +223,8 @@ class Raspi extends EventEmitter {
           }
           if (pinInfo.peripherals.indexOf('pwm') != -1) {
             supportedModes.push(PWM_MODE, SERVO_MODE);
+          } else if (enableSoftPwm === true && pinInfo.peripherals.indexOf('gpio') != -1) {
+            supportedModes.push(PWM_MODE, SERVO_MODE);
           }
         }
         const instance = this[instances][pin] = {
@@ -270,6 +274,10 @@ class Raspi extends EventEmitter {
           analogChannel: {
             enumerable: true,
             value: 127
+          },
+          [isHardwarePwm]: {
+            enumerable: false,
+            value: pinInfo.peripherals.indexOf('pwm') != -1
           }
         });
         if (instance.mode == OUTPUT_MODE) {
@@ -354,11 +362,7 @@ class Raspi extends EventEmitter {
       pin: normalizedPin,
       pullResistor: pinInstance.pullResistor
     };
-    const isModeSupported = this[pins][normalizedPin].supportedModes.indexOf(mode) > -1;
-
-    if (mode === PWM_MODE && isModeSupported === false) {
-      mode = SOFT_PWM_MODE;
-    } else if (isModeSupported === false) {
+    if (this[pins][normalizedPin].supportedModes.indexOf(mode) > -1) {
       throw new Error(`Pin "${pin}" does not support mode "${mode}"`);
     }
 
@@ -377,12 +381,14 @@ class Raspi extends EventEmitter {
           break;
         case PWM_MODE:
         case SERVO_MODE:
-          pinInstance.peripheral = new PWM(normalizedPin);
-          break;
-        case SOFT_PWM_MODE:
-          pinInstance.peripheral = new SoftPWM({
-            pin: normalizedPin, range: 255
-          });
+          if (this[pins][normalizedPin][isHardwarePwm] === true) {
+            pinInstance.peripheral = new PWM(normalizedPin);
+          } else {
+            pinInstance.peripheral = new SoftPWM({
+              pin: normalizedPin,
+              range: 255
+            });
+          }
           break;
         default:
           console.warn(`Unknown pin mode: ${mode}`);
@@ -402,7 +408,7 @@ class Raspi extends EventEmitter {
 
   pwmWrite(pin, value) {
     const pinInstance = this[getPinInstance](this.normalize(pin));
-    if (pinInstance.mode != PWM_MODE || pinInstance.mode != SOFT_PWM_MODE) {
+    if (pinInstance.mode != PWM_MODE) {
       this.pinMode(pin, PWM_MODE);
     }
     pinInstance.peripheral.write(Math.round(value * pinInstance.peripheral.range / 255));
