@@ -75,6 +75,48 @@ Also note that you will need to edit ```/boot/config.txt``` in order to change t
 
 Finally, if you try to access a device that doesn't exist, you will get an error stating ```EIO, i/o error``` (sorry it's not very descriptive).
 
+## API
+
+### new raspi(config)
+
+Instantiates a new Raspi-IO instance. If no defaults are being overridden then you do not need to pass this object in.
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>config (optional)</td>
+    <td>Object</td>
+    <td>Specify extra configuration</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td colspan="2">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tr>
+          <td>enableSoftPwm (optional)</td>
+          <td>boolean</td>
+          <td>Use a software-based approach to PWM on GPIO pins that do not support hardware PWM. The [`raspi-soft-pwm` library](https://github.com/tralves/raspi-soft-pwm) is used to enable this. The default value is **false**.</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
 License
 =======
 
