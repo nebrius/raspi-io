@@ -362,7 +362,7 @@ class Raspi extends EventEmitter {
       pin: normalizedPin,
       pullResistor: pinInstance.pullResistor
     };
-    if (this[pins][normalizedPin].supportedModes.indexOf(mode) > -1) {
+    if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error(`Pin "${pin}" does not support mode "${mode}"`);
     }
 
