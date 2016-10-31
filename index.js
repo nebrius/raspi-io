@@ -440,6 +440,8 @@ class Raspi extends EventEmitter {
     const pinInstance = this[getPinInstance](this.normalize(pin));
     if (pinInstance.mode === INPUT_MODE && value === HIGH) {
       this[pinMode]({ pin, mode: INPUT_MODE, pullResistor: PULL_UP });
+    } else if (pinInstance.mode === INPUT_MODE && value === LOW) {
+      this[pinMode]({ pin, mode: INPUT_MODE, pullResistor: PULL_DOWN });
     } else if (pinInstance.mode != OUTPUT_MODE) {
       this[pinMode]({ pin, mode: OUTPUT_MODE });
     }
@@ -522,7 +524,7 @@ class Raspi extends EventEmitter {
 
     this[i2cCheckAlive]();
 
-    this[i2cDelay] = delay || 0;
+    this[i2cDelay] = Math.round((delay || 0) / 1000);
 
     return this;
   }
