@@ -86,7 +86,7 @@ function bufferToArray(buffer) {
 
 class Raspi extends EventEmitter {
 
-  constructor() {
+  constructor({ includePins, excludePins } = {}) {
     super();
 
     Object.defineProperties(this, {
@@ -197,7 +197,7 @@ class Raspi extends EventEmitter {
     });
 
     init(() => {
-      const pinMappings = getPins();
+      let pinMappings = getPins();
       this[pins] = [];
 
       // Slight hack to get the LED in there, since it's not actually a pin
@@ -205,6 +205,31 @@ class Raspi extends EventEmitter {
         pins: [ LED_PIN ],
         peripherals: [ 'gpio' ]
       };
+
+      if (includePins && excludePins) {
+        throw new Error('"includePins" and "excludePins" cannot be specified at the same time');
+      }
+
+      if (Array.isArray(includePins)) {
+        const newPinMappings = {};
+        for (const pin of includePins) {
+          const normalizedPin = getPinNumber(pin);
+          if (normalizedPin === null) {
+            throw new Error(`Invalid pin "${pin}" specified in includePins`);
+          }
+          newPinMappings[normalizedPin] = pinMappings[normalizedPin];
+        }
+        pinMappings = newPinMappings;
+      } else if (Array.isArray(excludePins)) {
+        pinMappings = Object.assign({}, pinMappings);
+        for (const pin of excludePins) {
+          const normalizedPin = getPinNumber(pin);
+          if (normalizedPin === null) {
+            throw new Error(`Invalid pin "${pin}" specified in excludePins`);
+          }
+          delete pinMappings[normalizedPin];
+        }
+      }
 
       Object.keys(pinMappings).forEach((pin) => {
         const pinInfo = pinMappings[pin];

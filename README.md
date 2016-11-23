@@ -21,7 +21,7 @@ Detailed instructions for getting a Raspberry Pi ready for NodeBots, including h
 
 ## Installation
 
-Install with NPM:
+Install with npm:
 
 ```
 npm install raspi-io
@@ -73,12 +73,59 @@ Also note that you will need to edit ```/boot/config.txt``` in order to change t
 
 Finally, if you try to access a device that doesn't exist, you will get an error stating ```EIO, i/o error``` (sorry it's not very descriptive).
 
+## API
+
+### new raspi(options)
+
+Instantiates a new Raspi IO instance with the given options
+
+_Arguments_:
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>options (optional)</td>
+    <td>Object</td>
+    <td>The configuration options.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td colspan="2">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tr>
+          <td>includePins (optional)</td>
+          <td>Array&lt;Number|String&gt;</td>
+          <td>A list of pins to include in initialization. Any pins not listed here will not be initialized or available for use by Raspi IO</td>
+        </tr>
+        <tr>
+          <td>excludePins (optional)</td>
+          <td>Array&lt;Number|String&gt;</td>
+          <td>A list of pins to exclude from initialization. Any pins listed here will not be initialized or available for use by Raspi IO</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
 License
 =======
 
 The MIT License (MIT)
 
-Copyright (c) 2013-2014 Bryan Hughes bryan@theoreticalideations.com
+Copyright (c) 2013-2016 Bryan Hughes bryan@nebri.us
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
