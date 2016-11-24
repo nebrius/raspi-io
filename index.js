@@ -57,7 +57,6 @@ const isReady = Symbol('isReady');
 const pins = Symbol('pins');
 const instances = Symbol('instances');
 const analogPins = Symbol('analogPins');
-const isHardwarePwm = Symbol('isHardwarePwm');
 const getPinInstance = Symbol('getPinInstance');
 const i2c = Symbol('i2c');
 const i2cDelay = Symbol('i2cDelay');
@@ -259,7 +258,10 @@ class Raspi extends EventEmitter {
 
           // Used to set the default min and max values
           min: DEFAULT_SERVO_MIN,
-          max: DEFAULT_SERVO_MAX
+          max: DEFAULT_SERVO_MAX,
+
+          // Used to track if this pin is capable of hardware PWM
+          isHardwarePwm: pinInfo.peripherals.indexOf('pwm') !== -1
         };
         this[pins][pin] = Object.create(null, {
           supportedModes: {
@@ -297,10 +299,6 @@ class Raspi extends EventEmitter {
           analogChannel: {
             enumerable: true,
             value: 127
-          },
-          [isHardwarePwm]: {
-            enumerable: false,
-            value: pinInfo.peripherals.indexOf('pwm') != -1
           }
         });
         if (instance.mode == OUTPUT_MODE) {
@@ -404,7 +402,7 @@ class Raspi extends EventEmitter {
           break;
         case PWM_MODE:
         case SERVO_MODE:
-          if (this[pins][normalizedPin][isHardwarePwm] === true) {
+          if (pinInstance.isHardwarePwm) {
             pinInstance.peripheral = new PWM(normalizedPin);
           } else {
             pinInstance.peripheral = new SoftPWM({
