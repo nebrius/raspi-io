@@ -88,7 +88,7 @@ function bufferToArray(buffer) {
 
 class Raspi extends EventEmitter {
 
-  constructor({ includePins, excludePins, enableSoftPwm=false } = {}) {
+  constructor({ includePins, excludePins, enableSoftPwm = false } = {}) {
     super();
 
     Object.defineProperties(this, {
