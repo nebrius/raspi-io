@@ -1,3 +1,7 @@
+# 6.2.0 (2016-11-22)
+
+- Added the ability to specify pins to include or exclude in initialization
+
 # 6.1.1 (2016-10-29)
 
 - Updated dependencies to bring in new functionality

@@ -21,7 +21,7 @@ Detailed instructions for getting a Raspberry Pi ready for NodeBots, including h
 
 ## Installation
 
-Install with NPM:
+Install with npm:
 
 ```
 npm install raspi-io
@@ -75,9 +75,9 @@ Finally, if you try to access a device that doesn't exist, you will get an error
 
 ## API
 
-### new raspi(config)
+### new raspi(options)
 
-Instantiates a new Raspi-IO instance. If no defaults are being overridden then you do not need to pass this object in.
+Instantiates a new Raspi IO instance with the given options
 
 _Arguments_:
 
@@ -90,9 +90,9 @@ _Arguments_:
     </tr>
   </thead>
   <tr>
-    <td>config (optional)</td>
+    <td>options (optional)</td>
     <td>Object</td>
-    <td>Specify extra configuration</td>
+    <td>The configuration options.</td>
   </tr>
   <tr>
     <td></td>
@@ -110,6 +110,16 @@ _Arguments_:
           <td>boolean</td>
           <td>Use a software-based approach to PWM on GPIO pins that do not support hardware PWM. The [`raspi-soft-pwm` library](https://github.com/tralves/raspi-soft-pwm) is used to enable this. The default value is **false**.</td>
         </tr>
+        <tr>
+          <td>includePins (optional)</td>
+          <td>Array&lt;Number|String&gt;</td>
+          <td>A list of pins to include in initialization. Any pins not listed here will not be initialized or available for use by Raspi IO</td>
+        </tr>
+        <tr>
+          <td>excludePins (optional)</td>
+          <td>Array&lt;Number|String&gt;</td>
+          <td>A list of pins to exclude from initialization. Any pins listed here will not be initialized or available for use by Raspi IO</td>
+        </tr>
       </table>
     </td>
   </tr>
@@ -120,7 +130,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2013-2014 Bryan Hughes bryan@theoreticalideations.com
+Copyright (c) 2013-2016 Bryan Hughes bryan@nebri.us
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
