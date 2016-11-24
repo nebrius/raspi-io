@@ -246,7 +246,7 @@ class Raspi extends EventEmitter {
           }
           if (pinInfo.peripherals.indexOf('pwm') != -1) {
             supportedModes.push(PWM_MODE, SERVO_MODE);
-          } else if (enableSoftPwm === true && pinInfo.peripherals.indexOf('gpio') != -1) {
+          } else if (enableSoftPwm === true && pinInfo.peripherals.indexOf('gpio') !== -1) {
             supportedModes.push(PWM_MODE, SERVO_MODE);
           }
         }
