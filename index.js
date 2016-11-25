@@ -251,7 +251,8 @@ class Raspi extends EventEmitter {
           mode: supportedModes.indexOf(OUTPUT_MODE) == -1 ? UNKNOWN_MODE : OUTPUT_MODE,
 
           // Used to cache the previously written value for reading back in OUTPUT mode
-          previousWrittenValue: LOW,
+          // We start with undefined because it's in an unknown state
+          previousWrittenValue: undefined,
 
           // Used to set the default min and max values
           min: DEFAULT_SERVO_MIN,
