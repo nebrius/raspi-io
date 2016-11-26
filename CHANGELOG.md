@@ -1,8 +1,15 @@
-# 6.2.0 (2016-11-22)
+## 7.0.0 (2016-11-25)
+
+- Fixed a bug where writing 0 to GPIO pins on startup wasn't actually writing 0
+- Updated dependencies
+  - POTENTIALLY BREAKING CHANGE: removed dependency on raspi-wiringpi because Raspbian now ships with Wiring Pi by default. This _may_ break other OSes
+  - POTENTIALLY BREAKING CHANGE: I2C introduced a breaking change around write size limits, see the [raspi-i2c changelog](https://github.com/nebrius/raspi-i2c/blob/master/CHANGELOG.md) for more info.
+
+## 6.2.0 (2016-11-22)
 
 - Added the ability to specify pins to include or exclude in initialization
 
-# 6.1.1 (2016-10-29)
+## 6.1.1 (2016-10-29)
 
 - Updated dependencies to bring in new functionality
 - Fixed a bug where `i2cConfig` treated the delay as milliseconds instead of seconds
