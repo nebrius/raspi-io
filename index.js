@@ -407,7 +407,7 @@ class Raspi extends EventEmitter {
           } else {
             pinInstance.peripheral = new SoftPWM({
               pin: normalizedPin,
-              range: 255
+              range: 1000
             });
           }
           break;
