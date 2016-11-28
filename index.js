@@ -29,6 +29,7 @@ import { init } from 'raspi';
 import { getPins, getPinNumber } from 'raspi-board';
 import { PULL_NONE, PULL_UP, PULL_DOWN, DigitalOutput, DigitalInput } from 'raspi-gpio';
 import { PWM } from 'raspi-pwm';
+import { SoftPWM } from 'raspi-soft-pwm';
 import { I2C } from 'raspi-i2c';
 import { LED } from 'raspi-led';
 import { Serial, DEFAULT_PORT } from 'raspi-serial';
@@ -45,6 +46,9 @@ const LOW = 0;
 const HIGH = 1;
 
 const LED_PIN = -1;
+
+const SOFTWARE_PWM_RANGE = 1000;
+const SOFTWARE_PWM_FREQUENCY = 50;
 
 // Settings
 const DEFAULT_SERVO_MIN = 1000;
@@ -86,7 +90,7 @@ function bufferToArray(buffer) {
 
 class Raspi extends EventEmitter {
 
-  constructor({ includePins, excludePins } = {}) {
+  constructor({ includePins, excludePins, enableSoftPwm = false } = {}) {
     super();
 
     Object.defineProperties(this, {
@@ -244,6 +248,8 @@ class Raspi extends EventEmitter {
           }
           if (pinInfo.peripherals.indexOf('pwm') != -1) {
             supportedModes.push(PWM_MODE, SERVO_MODE);
+          } else if (enableSoftPwm === true && pinInfo.peripherals.indexOf('gpio') !== -1) {
+            supportedModes.push(PWM_MODE, SERVO_MODE);
           }
         }
         const instance = this[instances][pin] = {
@@ -256,7 +262,10 @@ class Raspi extends EventEmitter {
 
           // Used to set the default min and max values
           min: DEFAULT_SERVO_MIN,
-          max: DEFAULT_SERVO_MAX
+          max: DEFAULT_SERVO_MAX,
+
+          // Used to track if this pin is capable of hardware PWM
+          isHardwarePwm: pinInfo.peripherals.indexOf('pwm') !== -1
         };
         this[pins][pin] = Object.create(null, {
           supportedModes: {
@@ -381,6 +390,7 @@ class Raspi extends EventEmitter {
     if (this[pins][normalizedPin].supportedModes.indexOf(mode) == -1) {
       throw new Error(`Pin "${pin}" does not support mode "${mode}"`);
     }
+
     if (pin == LED_PIN) {
       if (pinInstance.peripheral instanceof LED) {
         return;
@@ -396,7 +406,15 @@ class Raspi extends EventEmitter {
           break;
         case PWM_MODE:
         case SERVO_MODE:
-          pinInstance.peripheral = new PWM(normalizedPin);
+          if (pinInstance.isHardwarePwm) {
+            pinInstance.peripheral = new PWM(normalizedPin);
+          } else {
+            pinInstance.peripheral = new SoftPWM({
+              pin: normalizedPin,
+              frequency: SOFTWARE_PWM_FREQUENCY,
+              range: SOFTWARE_PWM_RANGE
+            });
+          }
           break;
         default:
           console.warn(`Unknown pin mode: ${mode}`);
