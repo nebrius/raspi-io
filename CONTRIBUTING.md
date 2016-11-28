@@ -31,7 +31,7 @@ Raspi IO uses a modular architecture, and is composed of several different NPM p
 
 Check out the [Raspi.js](https://github.com/nebrius/raspi) repository for more information on Raspi.js.
 
-There are 8 packages total that make up Raspi.js:
+There are 9 packages total that make up Raspi.js:
 
 - [raspi](https://github.com/nebrius/raspi): This is the main package, analagous to the `express` package. It doesn't actually control any hardware on its own, it's only purpose is to handle initialization.
 - [raspi-board](https://github.com/nebrius/raspi-board): This package can be used independently of Raspi.js, and provides pin mapping services and board detection capabilities.
