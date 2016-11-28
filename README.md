@@ -108,7 +108,12 @@ _Arguments_:
         <tr>
           <td>enableSoftPwm (optional)</td>
           <td>boolean</td>
-          <td>Use a software-based approach to PWM on GPIO pins that do not support hardware PWM. The [`raspi-soft-pwm` library](https://github.com/tralves/raspi-soft-pwm) is used to enable this. The default value is <code>false</code>.</td>
+          <td>Use a software-based approach to PWM on GPIO pins that do not support hardware PWM. The <a href="https://github.com/tralves/raspi-soft-pwm"><code>raspi-soft-pwm</code> library</a> is used to enable this.
+          <br/><br/>
+          The default value is <code>false</code>.
+          <br/><br/>
+          <strong>Note:</strong> the timing of software PWM may not be as accurate as hardware PWM.
+          </td>
         </tr>
         <tr>
           <td>includePins (optional)</td>
