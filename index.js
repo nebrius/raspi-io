@@ -47,6 +47,9 @@ const HIGH = 1;
 
 const LED_PIN = -1;
 
+const SOFTWARE_PWM_RANGE = 1000;
+const SOFTWARE_PWM_FREQUENCY = 50;
+
 // Settings
 const DEFAULT_SERVO_MIN = 1000;
 const DEFAULT_SERVO_MAX = 2000;
@@ -408,7 +411,8 @@ class Raspi extends EventEmitter {
           } else {
             pinInstance.peripheral = new SoftPWM({
               pin: normalizedPin,
-              range: 1000
+              frequency: SOFTWARE_PWM_FREQUENCY,
+              range: SOFTWARE_PWM_RANGE
             });
           }
           break;
