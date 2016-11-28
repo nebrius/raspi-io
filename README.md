@@ -14,6 +14,7 @@ If you have a bug report, feature request, or wish to contribute code, please be
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - GCC 4.8 or newer
 - Node 0.12 or newer
+- [Wiring Pi](http://wiringpi.com/). _Note:_ This should come pre-installed with Raspbian out of the box.
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
