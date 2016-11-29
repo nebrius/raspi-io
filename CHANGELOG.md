@@ -1,3 +1,7 @@
+## 7.1.0 ()
+
+- Added support for software-based PWM
+
 ## 7.0.0 (2016-11-25)
 
 - Fixed a bug where writing 0 to GPIO pins on startup wasn't actually writing 0
