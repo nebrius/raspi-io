@@ -1,8 +1,8 @@
 {
   "name": "raspi-io",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nebrius/raspi-io.git"
@@ -21,7 +21,8 @@
     "raspi-led": "^1.4.0",
     "raspi-pwm": "^3.1.0",
     "raspi-serial": "^2.0.0",
-    "raspi-soft-pwm": "^2.0.1"
+    "raspi-soft-pwm": "^2.0.1",
+    "raspi-io-core": "1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
@@ -30,8 +31,8 @@
   },
   "scripts": {
     "test": "node ./test/bootstrap.js",
-    "prebuild": "eslint index.js",
-    "build": "babel index.js --presets es2015 --out-file lib/index.js --source-maps inline"
+    "prebuild": "eslint src/**/*.js",
+    "build": "babel src/index.js --presets es2015 --out-file dist/index.js --source-maps"
   },
   "author": "Bryan Hughes <bryan@nebri.us>",
   "contributors": [

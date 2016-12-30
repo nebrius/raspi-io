@@ -1,4 +1,10 @@
-## 7.1.0 ()
+## 7.2.0 (2016-12-30)
+
+- Split off almost all functionality of this module into [Raspi IO Core](https://github.com/nebrius/raspi-io-core)
+  - Note: there should be no functionality change from this package, but giving it a minor version bump anyways
+  - By splitting this off, it should be possible to create variants of raspi-io that target different OSes and configurations, e.g. Windows 10 IoT Core
+
+## 7.1.0 (2016-11-29)
 
 - Added support for software-based PWM
 
