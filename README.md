@@ -3,7 +3,7 @@ Raspi-io
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebrius/raspi-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be found on the [Johnny-Five Wiki](https://github.com/rwaldron/io-plugins). Raspi IO supports all models of the Raspberry Pi, except for the Model A.
+Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be found on the [Johnny-Five Wiki](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A.
 
 If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](/CONTRIBUTING.md).
 
@@ -11,10 +11,14 @@ If you have a bug report, feature request, or wish to contribute code, please be
 
 - Raspberry Pi Model B Rev 1 or newer (sorry Model A users)
 - Raspbian Jessie
+  - [Node-RED](http://nodered.org/) works, but can be finicky and difficult to debug.
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - GCC 4.8 or newer
-- Node 0.12 or newer
-- [Wiring Pi](http://wiringpi.com/). _Note:_ This should come pre-installed with Raspbian out of the box.
+- Node 4.0.0 or newer
+  - Raspi IO _may_ work on Node 0.12, but it is not tested nor supported. Bug reports will be ignored.
+  - Raspi IO is known not to work on Node 0.10. Bug reports will be ignored.
+- [Wiring Pi](http://wiringpi.com/)
+  - This should come pre-installed with Raspbian out of the box.
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
