@@ -14,6 +14,7 @@ If you have a bug report, feature request, or wish to contribute code, please be
   - [Node-RED](http://nodered.org/) works, but can be finicky and difficult to debug.
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - GCC 4.8 or newer
+  - This should come with Raspbian Jesse or newer
 - Node 4.0.0 or newer
   - Raspi IO _may_ work on Node 0.12, but it is not tested nor supported. Bug reports will be ignored.
   - Raspi IO is known not to work on Node 0.10. Bug reports will be ignored.
