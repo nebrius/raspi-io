@@ -77,7 +77,17 @@ First, note that the I2C pins can _only_ be used for I2C with Raspi IO, even tho
 
 Also note that you will need to edit ```/boot/config.txt``` in order to change the I2C baud rate from the default, if you need to. If you notice that behavior is unstable while trying to communicate with another microcontroller, try setting the baudrate to 10000 from the default 100000. This instability has been observed on the Arduino Nano before.
 
+After you install Raspi IO for the first time, you _must_ reboot your Raspberry Pi. I2C support is not enabled by default, and this module runs a script to enable it automatically and adjust a few I2C settings. These settings will not take effect until you reboot your Pi.
+
 Finally, if you try to access a device that doesn't exist, you will get an error stating ```EIO, i/o error``` (sorry it's not very descriptive).
+
+## Serial notes
+
+There are also a few limtations and extra steps to be aware of when using Serial (UART) on the Raspberry Pi.
+
+As with I2C, the serial pins can _only_ be used for serial with Raspi IO, even though they are capable of GPIO at the hardware level.
+
+Also as with I2C, you _must_ reboot your Raspberry Pi after install Raspi IO. Serial support is not enabled by default, and this module runs a script to enable it automatically and adjust a few serial settings. Notably, serial login is _disabled_ by this module. Be aware that having serial login enabled will cause conflicts when using serial with this module. These settings will not take effect until you reboot your Pi.
 
 ## API
 

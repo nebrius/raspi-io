@@ -17,10 +17,10 @@
     "raspi": "^3.0.0",
     "raspi-board": "^4.0.0",
     "raspi-gpio": "^2.3.0",
-    "raspi-i2c": "^4.0.0",
+    "raspi-i2c": "^5.0.2",
     "raspi-led": "^1.4.0",
     "raspi-pwm": "^3.1.0",
-    "raspi-serial": "^2.0.0",
+    "raspi-serial": "^3.0.3",
     "raspi-soft-pwm": "^2.0.1",
     "raspi-io-core": "1.0.0"
   },
