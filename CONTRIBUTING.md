@@ -45,6 +45,8 @@ There are 9 packages total that make up Raspi.js:
 - [raspi-led](https://github.com/nebrius/raspi-led): This peripheral package provides access to the on board status LED.
 - [raspi-serial](https://github.com/nebrius/raspi-serial): This peripheral package provides access to the UART.
 
+Note: Raspi.js is written in TypeScript, and Raspi IO is written in ES2015.
+
 ## Submitting Docs
 
 If you would like to help create better documentation, then that is seriously awesome! Documentation is the heart and soul of any good open source project, and the docs for Raspi IO can always be improved.
