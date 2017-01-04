@@ -19,7 +19,8 @@ If you have a bug report, feature request, or wish to contribute code, please be
   - Raspi IO _may_ work on Node 0.12, but it is not tested nor supported. Bug reports will be ignored.
   - Raspi IO is known not to work on Node 0.10. Bug reports will be ignored.
 - [Wiring Pi](http://wiringpi.com/)
-  - This should come pre-installed with Raspbian out of the box.
+  - If you are running the full version of Raspbian, this should come pre-installed.
+  - If you are running the lite version of Raspbain, install it with `sudo apt-get install wiringpi`
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
