@@ -1,3 +1,7 @@
+## 7.2.1 (2016-1-5)
+
+- Bumped the raspi-gpio dependency. There is a potentially breaking change in raspi-gpio, but because of how this module uses it, there is no breaking change here.
+
 ## 7.2.0 (2016-12-30)
 
 - Split off almost all functionality of this module into [Raspi IO Core](https://github.com/nebrius/raspi-io-core)
