@@ -1,3 +1,7 @@
+## 7.2.2 (2017-1-9)
+
+- Updated dependencies to pull in a bug fix
+
 ## 7.2.1 (2017-1-5)
 
 - Bumped the raspi-gpio dependency. There is a potentially breaking change in raspi-gpio, but because of how this module uses it, there is no breaking change here.
