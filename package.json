@@ -1,6 +1,6 @@
 {
   "name": "raspi-io",
-  "version": "7.2.2",
+  "version": "7.2.3",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "dist/index.js",
   "repository": {

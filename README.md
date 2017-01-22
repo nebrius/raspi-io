@@ -24,13 +24,13 @@ If you have a bug report, feature request, or wish to contribute code, please be
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
-#### Warning: this module must be installed as a normal user, but run as the root user
+**Warning:** this module must be installed as a normal user, but run as the root user
 
 ## Installation
 
 Install with npm:
 
-```
+```Shell
 npm install raspi-io
 ```
 
@@ -41,13 +41,13 @@ npm install raspi-io
 Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
 
 ```JavaScript
-var raspi = require('raspi-io');
-var five = require('johnny-five');
-var board = new five.Board({
-  io: new raspi()
+const Raspi = require('raspi-io');
+const five = require('johnny-five');
+const board = new five.Board({
+  io: new Raspi()
 });
 
-board.on('ready', function() {
+board.on('ready', () -> {
 
   // Create an Led on pin 7 (GPIO4) on P1 and strobe it on/off
   // Optionally set the speed; defaults to 100ms
@@ -58,9 +58,9 @@ board.on('ready', function() {
 
 The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
-*Warning:* this module _must_ be run as root, even though it cannot be installed as root.
+**Warning:** this module _must_ be run as root, even though it cannot be installed as root.
 
-Note: This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
+**Note:** This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
 ## Pin Naming
 

@@ -1,3 +1,8 @@
+## 7.2.3 (2017-22-1)
+
+- Publishing a new version to update the README on npmjs.com
+- Removed outdated and broken unit tests, they weren't even remotely comprehensive anyways.
+
 ## 7.2.2 (2017-1-9)
 
 - Updated dependencies to pull in a bug fix
