@@ -1,3 +1,7 @@
+## 7.2.4 (2017-2-17)
+
+- Updated raspi-io-core to bring in better error messaging around pin modes
+
 ## 7.2.3 (2017-22-1)
 
 - Publishing a new version to update the README on npmjs.com
