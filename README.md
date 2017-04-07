@@ -90,7 +90,7 @@ As with I2C, the serial pins can _only_ be used for serial with Raspi IO, even t
 
 Also as with I2C, you _must_ reboot your Raspberry Pi after install Raspi IO. Serial support is not enabled by default, and this module runs a script to enable it automatically and adjust a few serial settings. Notably, serial login is _disabled_ by this module. Be aware that having serial login enabled will cause conflicts when using serial with this module. These settings will not take effect until you reboot your Pi.
 
-Finally, the serial port on the Raspberry Pi 3 Model B is shared with the bluetooth module, and so serial is disabled by default on these boards. To use serial, you'll need to [disable the bluetooth module](https://www.abelectronics.co.uk/kb/article/1035/raspberry-pi-3-serial-port-usage) manually, and the set `enableSerial` to `true`.
+Finally, the serial port on the Raspberry Pi 3 Model B is shared with the bluetooth module, and so serial is disabled by default on these boards. To use serial, you'll need to [disable the bluetooth module](https://www.abelectronics.co.uk/kb/article/1035/raspberry-pi-3-serial-port-usage) manually, and then set `enableSerial` to `true`.
 
 ## API
 
