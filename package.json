@@ -1,6 +1,6 @@
 {
   "name": "raspi-io",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "dist/index.js",
   "repository": {
@@ -22,7 +22,7 @@
     "raspi-pwm": "^3.1.0",
     "raspi-serial": "^3.0.3",
     "raspi-soft-pwm": "^2.0.1",
-    "raspi-io-core": "1.1.0"
+    "raspi-io-core": "1.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

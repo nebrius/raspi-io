@@ -1,3 +1,7 @@
+## 7.3.1 (2017-4-7)
+
+- Dependency bump
+
 ## 7.3.0 (2017-4-7)
 
 - Added `enableSerial` property to get around crashing on the Raspberry Pi 3
