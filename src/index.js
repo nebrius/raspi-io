@@ -25,16 +25,24 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import { RaspiIOCore } from 'raspi-io-core';
 
-module.exports = function RaspiIO({ includePins, excludePins, enableSoftPwm = false } = {}) {
+module.exports = function RaspiIO({ includePins, excludePins, enableSoftPwm = false, enableSerial } = {}) {
+  const board = require('raspi-board');
+
   const platform = {
     'raspi': require('raspi'),
-    'raspi-board': require('raspi-board'),
+    'raspi-board': board,
     'raspi-gpio': require('raspi-gpio'),
     'raspi-i2c': require('raspi-i2c'),
     'raspi-led': require('raspi-led'),
-    'raspi-pwm': require('raspi-pwm'),
-    'raspi-serial': require('raspi-serial')
+    'raspi-pwm': require('raspi-pwm')
   };
+
+  if (typeof enableSerial === 'undefined') {
+    enableSerial = board.getBoardRevision() !== board.VERSION_3_MODEL_B;
+  }
+  if (enableSerial) {
+    platform['raspi-serial'] = require('raspi-serial');
+  }
 
   if (enableSoftPwm) {
     platform['raspi-soft-pwm'] = require('raspi-soft-pwm');
@@ -43,6 +51,7 @@ module.exports = function RaspiIO({ includePins, excludePins, enableSoftPwm = fa
   return new RaspiIOCore({
     includePins,
     excludePins,
+    enableSerial,
     enableSoftPwm,
     platform
   });

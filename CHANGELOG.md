@@ -1,3 +1,7 @@
+## 7.3.0 (2017-4-7)
+
+- Added `enableSerial` property to get around crashing on the Raspberry Pi 3
+
 ## 7.2.4 (2017-2-17)
 
 - Updated raspi-io-core to bring in better error messaging around pin modes

@@ -7,17 +7,26 @@ module.exports = function RaspiIO() {
       includePins = _ref.includePins,
       excludePins = _ref.excludePins,
       _ref$enableSoftPwm = _ref.enableSoftPwm,
-      enableSoftPwm = _ref$enableSoftPwm === undefined ? false : _ref$enableSoftPwm;
+      enableSoftPwm = _ref$enableSoftPwm === undefined ? false : _ref$enableSoftPwm,
+      enableSerial = _ref.enableSerial;
+
+  var board = require('raspi-board');
 
   var platform = {
     'raspi': require('raspi'),
-    'raspi-board': require('raspi-board'),
+    'raspi-board': board,
     'raspi-gpio': require('raspi-gpio'),
     'raspi-i2c': require('raspi-i2c'),
     'raspi-led': require('raspi-led'),
-    'raspi-pwm': require('raspi-pwm'),
-    'raspi-serial': require('raspi-serial')
+    'raspi-pwm': require('raspi-pwm')
   };
+
+  if (typeof enableSerial === 'undefined') {
+    enableSerial = board.getBoardRevision() !== board.VERSION_3_MODEL_B;
+  }
+  if (enableSerial) {
+    platform['raspi-serial'] = require('raspi-serial');
+  }
 
   if (enableSoftPwm) {
     platform['raspi-soft-pwm'] = require('raspi-soft-pwm');
@@ -26,6 +35,7 @@ module.exports = function RaspiIO() {
   return new _raspiIoCore.RaspiIOCore({
     includePins: includePins,
     excludePins: excludePins,
+    enableSerial: enableSerial,
     enableSoftPwm: enableSoftPwm,
     platform: platform
   });
