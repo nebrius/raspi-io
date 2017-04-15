@@ -27,7 +27,7 @@ If you are unfamiliar with ES2015, take a look at [Babel's Learn EES2015 page](h
 
 Raspi IO uses a modular architecture, and is composed of several different npm packages. These packages are split into two groups: Raspi IO and Raspi.js. Raspi.js provides a Raspberry Pi specific API for working with the Raspberry Pi's hardware, and Raspi IO acts as a translation layer between Johnny-Five and Raspi.js. Raspi IO is composed of two packages, raspi-io (this repository) and [raspi-io-core](https://github.com/nebrius/raspi-io-core), and everything else constitutes Raspi.js. This diagram shows the relationship between all of the packages:
 
-![Raspi IO Architecture Diagram](https://theoreticalieations.com/static/raspi-io-architecture.png)
+![Raspi IO Architecture Diagram](https://theoreticalideations.com/static/raspi-io-architecture.png)
 
 [Raspi IO Core](https://github.com/nebrius/raspi-io-core) is an abstract library that converts between the Raspi.js API and the [Johnny-Five IO plugin](https://github.com/rwaldron/io-plugins) API. Raspi IO provides an implementation of Raspi.js to Raspi IO Core. This is broken into two packages to make it easier to port Raspi IO to multiple operating systems for the Raspberry Pi.
 
