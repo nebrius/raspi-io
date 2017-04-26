@@ -13,14 +13,9 @@ If you have a bug report, feature request, or wish to contribute code, please be
 - Raspbian Jessie
   - [Node-RED](http://nodered.org/) works, but can be finicky and difficult to debug.
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
-- GCC 4.8 or newer
-  - This should come with Raspbian Jesse or newer
 - Node 4.0.0 or newer
   - Raspi IO _may_ work on Node 0.12, but it is not tested nor supported. Bug reports will be ignored.
   - Raspi IO is known not to work on Node 0.10. Bug reports will be ignored.
-- [Wiring Pi](http://wiringpi.com/)
-  - If you are running the full version of Raspbian, this should come pre-installed.
-  - If you are running the lite version of Raspbain, install it with `sudo apt-get install wiringpi`
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
@@ -33,8 +28,6 @@ Install with npm:
 ```Shell
 npm install raspi-io
 ```
-
-**Warning**: this module requires GCC 4.8 or newer. This means that you should be running Raspbian Jessie or newer, released in September of 2015. The package should be installed with an unprivileged user account as the installation as root is likely to fail with an [build error](https://github.com/nebrius/raspi-io/issues/40).
 
 ## Usage
 
@@ -56,7 +49,7 @@ board.on('ready', () => {
 });
 ```
 
-The ```io``` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as ```"P1-7"```, not ```7```. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
+The `io` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as `"P1-7"`, not `7`. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
 
 **Warning:** this module _must_ be run as root, even though it cannot be installed as root.
 
@@ -66,7 +59,7 @@ The ```io``` property must be specified explicitly to differentiate from trying 
 
 The pins on the Raspberry Pi are a little complicated. There are multiple headers on some Raspberry Pis with extra pins, and the pin numbers are not consistent between Raspberry Pi board versions.
 
-To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. ```'GPIO18'```. The second way is to specify by pin number, which is specified in the form "P[header]-[pin]", e.g. ```'P1-7'```. The final way is specify the [Wiring Pi virtual pin number](http://wiringpi.com/pins/), e.g. ```7```. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
+To help make it easier, you can specify pins in three ways. The first is to specify the pin by function, e.g. `'GPIO18'`. The second way is to specify by pin number, which is specified in the form "P[header]-[pin]", e.g. `'P1-7'`. The final way is specify the [Wiring Pi virtual pin number](http://wiringpi.com/pins/), e.g. `7`. If you specify a number instead of a string, it is assumed to be a Wiring Pi number.
 
 Be sure to read the [full list of pins](https://github.com/nebrius/raspi-io/wiki/Pin-Information) on the supported models of the Raspberry Pi.
 
@@ -76,11 +69,11 @@ There are a few limitations and extra steps to be aware of when using I2C on the
 
 First, note that the I2C pins can _only_ be used for I2C with Raspi IO, even though they are capable of GPIO at the hardware level.
 
-Also note that you will need to edit ```/boot/config.txt``` in order to change the I2C baud rate from the default, if you need to. If you notice that behavior is unstable while trying to communicate with another microcontroller, try setting the baudrate to 10000 from the default 100000. This instability has been observed on the Arduino Nano before.
+Also note that you will need to edit `/boot/config.txt` in order to change the I2C baud rate from the default, if you need to. If you notice that behavior is unstable while trying to communicate with another microcontroller, try setting the baudrate to 10000 from the default 100000. This instability has been observed on the Arduino Nano before.
 
 After you install Raspi IO for the first time, you _must_ reboot your Raspberry Pi. I2C support is not enabled by default, and this module runs a script to enable it automatically and adjust a few I2C settings. These settings will not take effect until you reboot your Pi.
 
-Finally, if you try to access a device that doesn't exist, you will get an error stating ```EIO, i/o error``` (sorry it's not very descriptive).
+Finally, if you try to access a device that doesn't exist, you will get an error stating `EIO, i/o error` (sorry it's not very descriptive).
 
 ## Serial notes
 
@@ -88,9 +81,23 @@ There are also a few limtations and extra steps to be aware of when using Serial
 
 As with I2C, the serial pins can _only_ be used for serial with Raspi IO, even though they are capable of GPIO at the hardware level.
 
-Also as with I2C, you _must_ reboot your Raspberry Pi after install Raspi IO. Serial support is not enabled by default, and this module runs a script to enable it automatically and adjust a few serial settings. Notably, serial login is _disabled_ by this module. Be aware that having serial login enabled will cause conflicts when using serial with this module. These settings will not take effect until you reboot your Pi.
+**If you _are not_ running a Raspberry Pi without WiFi:**
 
-Finally, the serial port on the Raspberry Pi 3 Model B is shared with the bluetooth module, and so serial is disabled by default on these boards. To use serial, you'll need to [disable the bluetooth module](https://www.abelectronics.co.uk/kb/article/1035/raspberry-pi-3-serial-port-usage) manually, and then set `enableSerial` to `true`.
+All older versions of the Raspberry Pi enable a TTY console over serial, meaning that you can use the `screen` command on *NIX computers to log in to the Raspberry Pi over serial. This can get in the way of using the serial port for robotics, however. To disable TTY over serial, do the following:
+
+1. Run `sudo raspi-config` to start the Raspberry Pi configuration utility
+1. Select `5 Interface Options`
+1. Select `P6 Serial Options`
+1. Select `No` when asked `Would you like a login shell to be accessible over serial?`
+1. Select `Yes` when asked `Would you like the serial port hardware to be enabled?`
+1. Select `OK`
+1. Select `Finish` and select `Yes` to reboot when prompted
+
+**WARNING: If you _are_ running a Raspberry Pi with WiFi:**
+
+The Bluetooth module on these Raspberry Pis is controlled using the serial port, meaning it cannot be used directly while also using Bluetooth. Using this module with the default serial port will _disable_ bluetooth!
+
+For an in-depth discussion on why and how to work around it, read https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3.
 
 ## API
 

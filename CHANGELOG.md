@@ -1,3 +1,13 @@
+## 8.0.0 (2017-4-23)
+
+- Updated dependencies that gets rid of Wiring Pi in favor of pigpio.
+  - POTENTIALLY BREAKING CHANGE: there are no _known_ breakages with this update, but there are a lot of under the hood changes, and better safe than sorry.
+- Disabled serial on the Raspberry Pi Zero W by default because it suffers from the same serial limitations as the Raspberry Pi 3
+
+## 7.4.0 (2017-4-19)
+
+- Added proper Raspberry Pi Zero W support, which sets `enableSerial` to false
+
 ## 7.3.1 (2017-4-7)
 
 - Dependency bump

@@ -22,7 +22,7 @@ module.exports = function RaspiIO() {
   };
 
   if (typeof enableSerial === 'undefined') {
-    enableSerial = board.getBoardRevision() !== board.VERSION_3_MODEL_B;
+    enableSerial = board.getBoardRevision() !== board.VERSION_3_MODEL_B && board.getBoardRevision() !== board.VERSION_1_MODEL_ZERO_W;
   }
   if (enableSerial) {
     platform['raspi-serial'] = require('raspi-serial');
