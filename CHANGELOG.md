@@ -1,3 +1,7 @@
+## 8.0.1(2017-4-29)
+
+- Pulled in a dependency change that fixes a bug in servo duty cycle calculation
+
 ## 8.0.0 (2017-4-23)
 
 - Updated dependencies that gets rid of Wiring Pi in favor of pigpio.
