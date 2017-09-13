@@ -1,3 +1,12 @@
+## 8.1.0 (2017-9-12)
+
+- Enforced support for Node.js < 4.0.0 via package.json "engines" field.
+    - This does not change the actual supported platforms for Raspi IO, just makes it more explicit
+- Dropped support for attempting to install on non-arm platforms via package.json's "cpu" field.
+    - Attempting to install this on a non-Raspberry Pi platform before gave a bunch of obtuse errors, so this doesn't _actually_ change the ability to install raspi-io, but does make it fail earlier, harder, and more obviously
+- Updated dependencies that had breaking changes in prep for adding 1-wire support.
+    - The breaking changes in dependencies are not surfaced as breaking changes in Raspi IO itself.
+
 ## 8.0.1(2017-4-29)
 
 - Pulled in a dependency change that fixes a bug in servo duty cycle calculation

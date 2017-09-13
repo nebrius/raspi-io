@@ -10,12 +10,10 @@ If you have a bug report, feature request, or wish to contribute code, please be
 ## System Requirements
 
 - Raspberry Pi Model B Rev 1 or newer (sorry Model A users)
-- Raspbian Jessie
+- Raspbian Jessie or newer
   - [Node-RED](http://nodered.org/) works, but can be finicky and difficult to debug.
   - See https://github.com/nebrius/raspi-io/issues/24 for more info about support for other OSes
 - Node 4.0.0 or newer
-  - Raspi IO _may_ work on Node 0.12, but it is not tested nor supported. Bug reports will be ignored.
-  - Raspi IO is known not to work on Node 0.10. Bug reports will be ignored.
 
 Detailed instructions for getting a Raspberry Pi ready for NodeBots, including how to install Node.js, can be found in the [wiki](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots)
 
@@ -166,7 +164,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2013-2016 Bryan Hughes bryan@nebri.us
+Copyright (c) 2014-2017 Bryan Hughes <bryan@nebri.us>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -175,13 +173,13 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
