@@ -147,12 +147,12 @@ _Arguments_:
         <tr>
           <td>includePins (optional)</td>
           <td>Array&lt;Number|String&gt;</td>
-          <td>A list of pins to include in initialization. Any pins not listed here will not be initialized or available for use by Raspi IO</td>
+          <td>A list of pins to include in initialization. If specified, any pins <em>not</em> listed here will not be initialized or available for use by Raspi IO. If not specified, all pins will be available for use by Raspi IO.</td>
         </tr>
         <tr>
           <td>excludePins (optional)</td>
           <td>Array&lt;Number|String&gt;</td>
-          <td>A list of pins to exclude from initialization. Any pins listed here will not be initialized or available for use by Raspi IO</td>
+          <td>A list of pins to exclude from initialization. If specified, any pins listed here will not be initialized or available for use by Raspi IO. If not specified, all pins will be available for use by Raspi IO.</td>
         </tr>
       </table>
     </td>
