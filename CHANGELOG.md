@@ -1,3 +1,7 @@
+## 8.1.1 (2018-04-02)
+
+- Switched to including a range for raspi-io-core to pull in latest changes
+
 ## 8.1.0 (2017-9-12)
 
 - Enforced support for Node.js < 4.0.0 via package.json "engines" field.
