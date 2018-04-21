@@ -1,3 +1,8 @@
+## 9.0.0
+
+- Updated dependencies
+- BREAKING CHANGE: Dropped support for Node.js 4
+
 ## 8.1.1 (2018-04-02)
 
 - Switched to including a range for raspi-io-core to pull in latest changes
