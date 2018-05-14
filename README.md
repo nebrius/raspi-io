@@ -79,10 +79,6 @@ There are also a few limtations and extra steps to be aware of when using Serial
 
 As with I2C, the serial pins can _only_ be used for serial with Raspi IO, even though they are capable of GPIO at the hardware level.
 
-## I2S notes
-
-I2S is not supported when running Raspi IO. Raspi IO uses [pigpio](https://github.com/joan2937/pigpio) for GPIO and PWM, and pigpio uses the PCM hardware for timing purposes via DMA. The PCM hardware can only be used for DMA _or_ I2S, but not both at the same time. See https://github.com/joan2937/pigpio/issues/87 for more info.
-
 **If you _are not_ running a Raspberry Pi without WiFi:**
 
 All older versions of the Raspberry Pi enable a TTY console over serial, meaning that you can use the `screen` command on *NIX computers to log in to the Raspberry Pi over serial. This can get in the way of using the serial port for robotics, however. To disable TTY over serial, do the following:
@@ -100,6 +96,10 @@ All older versions of the Raspberry Pi enable a TTY console over serial, meaning
 The Bluetooth module on these Raspberry Pis is controlled using the serial port, meaning it cannot be used directly while also using Bluetooth. Using this module with the default serial port will _disable_ bluetooth!
 
 For an in-depth discussion on why and how to work around it, read https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3.
+
+## I2S notes
+
+I2S is not supported when running Raspi IO. Raspi IO uses [pigpio](https://github.com/joan2937/pigpio) for GPIO and PWM, and pigpio uses the PCM hardware for timing purposes via DMA. The PCM hardware can only be used for DMA _or_ I2S, but not both at the same time. See https://github.com/joan2937/pigpio/issues/87 for more info.
 
 ## API
 
