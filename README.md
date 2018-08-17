@@ -145,7 +145,7 @@ _Arguments_:
           <br/><br/>
           The default value is <code>false</code>.
           <br/><br/>
-          <strong>Note:</strong> the timing of software PWM may not be as accurate as hardware PWM.
+          <strong>Note:</strong> the timing of software PWM may not be as accurate as hardware PWM, and increases CPU usage
           </td>
         </tr>
         <tr>
