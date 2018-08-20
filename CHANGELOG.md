@@ -5,7 +5,7 @@
 
 ## 8.1.1 (2018-4-02)
 
-- Switched to including a range for raspi-io-core to pull in latest changes
+- Pulled in latest version of raspi-io-core to switch servo methods to using range instead of degrees
 
 ## 8.1.0 (2017-9-12)
 
