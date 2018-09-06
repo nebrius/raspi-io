@@ -136,7 +136,7 @@ _Arguments_:
         <tr>
           <td>enableSerial (optional)</td>
           <td>boolean</td>
-          <td>Enables the use of the serial port by Johnny-Five. The default is <code>true</code>, except on the Raspberry Pi 3 Model B where it is <code>false</code></td>
+          <td>Enables the use of the serial port by Johnny-Five. The default is <code>true</code>, except on models with Bluetooth where it is <code>false</code> (currently the Raspberry Pi 3 Model B, Raspberry Pi 3 Model B+, and Raspbery Pi Zero W)</td>
         </tr>
         <tr>
           <td>enableSoftPwm (optional)</td>
