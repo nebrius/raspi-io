@@ -21,7 +21,7 @@ Detailed instructions for getting a Raspberry Pi ready for NodeBots, including h
 
 ## Installation
 
-Install with npm:
+Install with npm on a Raspberry Pi (not a laptop):
 
 ```Shell
 npm install raspi-io
@@ -29,7 +29,7 @@ npm install raspi-io
 
 ## Usage
 
-Using raspi-io inside of Johnny-Five is pretty straightforward, although does take an extra step compared to the Arduino Uno:
+Using raspi-io inside of Johnny-Five is fairly straightforward, although does take an extra step compared to using Johnny-Five on the Arduino Uno:
 
 ```JavaScript
 const Raspi = require('raspi-io');
@@ -47,13 +47,15 @@ board.on('ready', () => {
 });
 ```
 
-The `io` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as `"P1-7"`, not `7`. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi.
+The `io` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as `"P1-7"`, not `7`. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi, which can be a bit confusing.
 
 **Warning:** this module _must_ be run as root, even though it cannot be installed as root.
 
 **Note:** This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
 
-## Pin Naming
+## Important Notes
+
+### Pin Naming
 
 The pins on the Raspberry Pi are a little complicated. There are multiple headers on some Raspberry Pis with extra pins, and the pin numbers are not consistent between Raspberry Pi board versions.
 
@@ -61,7 +63,7 @@ To help make it easier, you can specify pins in three ways. The first is to spec
 
 Be sure to read the [full list of pins](https://github.com/nebrius/raspi-io/wiki/Pin-Information) on the supported models of the Raspberry Pi.
 
-## I2C notes
+### I2C notes
 
 There are a few limitations and extra steps to be aware of when using I2C on the Raspberry Pi.
 
@@ -73,7 +75,7 @@ After you install Raspi IO for the first time, you _must_ reboot your Raspberry 
 
 Finally, if you try to access a device that doesn't exist, you will get an error stating `EIO, i/o error` (sorry it's not very descriptive).
 
-## Serial notes
+### Serial notes
 
 There are also a few limtations and extra steps to be aware of when using Serial (UART) on the Raspberry Pi.
 
@@ -97,7 +99,7 @@ The Bluetooth module on these Raspberry Pis is controlled using the serial port,
 
 For an in-depth discussion on why and how to work around it, read https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3.
 
-## I2S notes
+### I2S notes
 
 I2S is not supported when running Raspi IO. Raspi IO uses [pigpio](https://github.com/joan2937/pigpio) for GPIO and PWM, and pigpio uses the PCM hardware for timing purposes via DMA. The PCM hardware can only be used for DMA _or_ I2S, but not both at the same time. See https://github.com/joan2937/pigpio/issues/87 for more info.
 
