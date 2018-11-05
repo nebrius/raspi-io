@@ -3,7 +3,7 @@ Raspi-io
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebrius/raspi-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Raspi-io is a Firmata API compatible library for Raspbian running on the [Raspberry Pi](http://www.raspberrypi.org/) that can be used as an I/O plugin with [Johnny-Five](https://github.com/rwaldron/johnny-five). The API docs for this module can be found on the [Johnny-Five Wiki](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A.
+Raspi-io is an I/O plugin for the [Johnny-Five](https://github.com/rwaldron/johnny-five) Node.js robotics platform that enables Johnny-Five to control the hardware on a Raspberry Pi. The API docs for this module can be found on the [Johnny-Five I/O Plugin specification page](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A.
 
 If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](/CONTRIBUTING.md).
 
@@ -86,12 +86,12 @@ As with I2C, the serial pins can _only_ be used for serial with Raspi IO, even t
 All older versions of the Raspberry Pi enable a TTY console over serial, meaning that you can use the `screen` command on *NIX computers to log in to the Raspberry Pi over serial. This can get in the way of using the serial port for robotics, however. To disable TTY over serial, do the following:
 
 1. Run `sudo raspi-config` to start the Raspberry Pi configuration utility
-1. Select `5 Interface Options`
-1. Select `P6 Serial Options`
-1. Select `No` when asked `Would you like a login shell to be accessible over serial?`
-1. Select `Yes` when asked `Would you like the serial port hardware to be enabled?`
-1. Select `OK`
-1. Select `Finish` and select `Yes` to reboot when prompted
+2. Select `5 Interface Options`
+3. Select `P6 Serial Options`
+4. Select `No` when asked `Would you like a login shell to be accessible over serial?`
+5. Select `Yes` when asked `Would you like the serial port hardware to be enabled?`
+6. Select `OK`
+7. Select `Finish` and select `Yes` to reboot when prompted
 
 **WARNING: If you _are_ running a Raspberry Pi with WiFi:**
 
