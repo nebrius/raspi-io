@@ -1,9 +1,9 @@
-Raspi-io
+Raspi IO
 ========
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebrius/raspi-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Raspi-io is an I/O plugin for the [Johnny-Five](https://github.com/rwaldron/johnny-five) Node.js robotics platform that enables Johnny-Five to control the hardware on a Raspberry Pi. The API docs for this module can be found on the [Johnny-Five I/O Plugin specification page](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A.
+Raspi IO is an I/O plugin for the [Johnny-Five](https://github.com/rwaldron/johnny-five) Node.js robotics platform that enables Johnny-Five to control the hardware on a Raspberry Pi. The API docs for this module can be found on the [Johnny-Five I/O Plugin specification page](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A.
 
 If you have a bug report, feature request, or wish to contribute code, please be sure to check out the [Contributing Guide](/CONTRIBUTING.md).
 
@@ -29,7 +29,7 @@ npm install raspi-io
 
 ## Usage
 
-Using raspi-io inside of Johnny-Five is fairly straightforward, although does take an extra step compared to using Johnny-Five on the Arduino Uno:
+Using Raspi IO inside of Johnny-Five is fairly straightforward, although does take an extra step compared to using Johnny-Five on the Arduino Uno:
 
 ```JavaScript
 const Raspi = require('raspi-io');
@@ -51,7 +51,7 @@ The `io` property must be specified explicitly to differentiate from trying to c
 
 **Warning:** this module _must_ be run as root, even though it cannot be installed as root.
 
-**Note:** This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using raspi-io directly.
+**Note:** This module is not intended to be used directly. If you do not want to use Johnny-Five, I recommend taking a look at [Raspi.js](https://github.com/nebrius/raspi), which underpins this library and is a little more straight-forward to use than using Raspi IO directly.
 
 ## Important Notes
 
