@@ -1,3 +1,7 @@
+## 9.0.1 (2018-12-10)
+
+- Updated raspi-board to the latest version, which includes breaking changes. These changes are not surfaced by Raspi IO.
+
 ## 9.0.0 (2018-4-21)
 
 - Updated dependencies
