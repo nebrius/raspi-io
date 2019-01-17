@@ -1,6 +1,6 @@
 {
   "name": "raspi-io",
-  "version": "9.0.1",
+  "version": "10.0.0",
   "description": "A Firmata-compatible Raspberry Pi I/O API",
   "main": "dist/index.js",
   "repository": {
@@ -14,20 +14,19 @@
     "robots"
   ],
   "dependencies": {
-    "raspi": "^5.0.2",
-    "raspi-board": "^6.2.0",
-    "raspi-gpio": "^6.0.0",
-    "raspi-i2c": "^6.1.2",
-    "raspi-led": "^2.0.0",
-    "raspi-pwm": "^6.0.0",
-    "raspi-serial": "^5.0.0",
-    "raspi-soft-pwm": "^5.0.0",
-    "raspi-io-core": "^2.1.0"
+    "core-io": "^3.0.0",
+    "raspi": "^6.0.0",
+    "raspi-board": "^7.1.1",
+    "raspi-gpio": "^6.2.0",
+    "raspi-i2c": "^6.2.1",
+    "raspi-led": "^2.1.0",
+    "raspi-serial": "^5.1.0",
+    "raspi-soft-pwm": "^5.1.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "eslint": "^2.13.1"
+    "@types/node": "^10.12.18",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.2"
   },
   "engines": {
     "node": ">= 6.4.0"
@@ -37,8 +36,8 @@
   ],
   "scripts": {
     "test": "node ./test/bootstrap.js",
-    "prebuild": "eslint src/**/*.js",
-    "build": "babel src/index.js --presets es2015 --out-file dist/index.js --source-maps"
+    "prebuild": "tslint src/**/*.ts",
+    "build": "tsc"
   },
   "author": "Bryan Hughes <bryan@nebri.us>",
   "contributors": [
