@@ -23,8 +23,9 @@ SOFTWARE.
 */
 
 import { CoreIO, IOptions as ICoreIOOptions } from 'core-io';
+import { IPinInfo, PeripheralType } from 'core-io-types';
 import {
-  getPins, getBoardRevision,
+  getPins, getBoardRevision, getPinNumber,
   VERSION_3_MODEL_A_PLUS,
   VERSION_3_MODEL_B,
   VERSION_3_MODEL_B_PLUS,
@@ -36,31 +37,36 @@ import { module as i2c } from 'raspi-i2c';
 import { module as led } from 'raspi-led';
 import { module as pwm } from 'raspi-soft-pwm';
 import { module as serial, DEFAULT_PORT } from 'raspi-serial';
+import * as clone from 'clone';
 
 export interface IOptions {
   includePins?: Array<number | string>;
   excludePins?: Array<number | string>;
   enableSerial?: boolean;
+  enableI2C?: boolean;
 }
 
-module.exports = function RaspiIO({ includePins, excludePins, enableSerial }: IOptions = {}) {
+export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true }: IOptions = {}) {
   const options: ICoreIOOptions = {
     pluginName: 'Raspi IO',
-    pinInfo: getPins(),
+    pinInfo: clone(getPins()),
     platform: {
       base,
       gpio,
-      i2c,
       led,
       pwm
     }
   };
 
+  if (enableI2C) {
+    options.platform.i2c = i2c;
+  }
+
   if (typeof enableSerial === 'undefined') {
     enableSerial =
+      getBoardRevision() !== VERSION_3_MODEL_B &&
       getBoardRevision() !== VERSION_3_MODEL_A_PLUS &&
       getBoardRevision() !== VERSION_3_MODEL_B_PLUS &&
-      getBoardRevision() !== VERSION_3_MODEL_B &&
       getBoardRevision() !== VERSION_1_MODEL_ZERO_W;
   }
   if (enableSerial) {
@@ -70,27 +76,44 @@ module.exports = function RaspiIO({ includePins, excludePins, enableSerial }: IO
     };
   }
 
-  // TODO
-  // if (Array.isArray(includePins)) {
-  //   const newPinMappings = {};
-  //   for (const pin of includePins) {
-  //     const normalizedPin = this[raspiBoardModule].getPinNumber(pin);
-  //     if (normalizedPin === null) {
-  //       throw new Error(`Invalid pin "${pin}" specified in includePins`);
-  //     }
-  //     newPinMappings[normalizedPin] = pinMappings[normalizedPin];
-  //   }
-  //   pinMappings = newPinMappings;
-  // } else if (Array.isArray(excludePins)) {
-  //   pinMappings = Object.assign({}, pinMappings);
-  //   for (const pin of excludePins) {
-  //     const normalizedPin = this[raspiBoardModule].getPinNumber(pin);
-  //     if (normalizedPin === null) {
-  //       throw new Error(`Invalid pin "${pin}" specified in excludePins`);
-  //     }
-  //     delete pinMappings[normalizedPin];
-  //   }
-  // }
+  // Clone the pins so the internal object in raspi-board isn't mutated
+  if (Array.isArray(includePins)) {
+    const newPinMappings: { [ pin: number ]: IPinInfo } = {};
+    for (const pin of includePins) {
+      const normalizedPin = getPinNumber(pin);
+      if (normalizedPin === null) {
+        throw new Error(`Invalid pin "${pin}" specified in includePins`);
+      }
+      newPinMappings[normalizedPin] = options.pinInfo[normalizedPin];
+    }
+    options.pinInfo = newPinMappings;
+  } else if (Array.isArray(excludePins)) {
+    for (const pin of excludePins) {
+      const normalizedPin = getPinNumber(pin);
+      if (normalizedPin === null) {
+        throw new Error(`Invalid pin "${pin}" specified in excludePins`);
+      }
+      delete options.pinInfo[normalizedPin];
+    }
+  }
+
+  // I2C pins need to be dedicated in Raspi IO, so filter out any peripherals other than I2C on I2C pins
+  if (enableI2C) {
+    for (const pin in options.pinInfo) {
+      if (options.pinInfo[pin].peripherals.indexOf(PeripheralType.I2C) !== -1) {
+        options.pinInfo[pin].peripherals = [ PeripheralType.I2C ];
+      }
+    }
+  }
+
+  // UART pins need to be dedicated in Raspi IO, so filter out any peripherals other than UART on UART pins
+  if (enableSerial) {
+    for (const pin in options.pinInfo) {
+      if (options.pinInfo[pin].peripherals.indexOf(PeripheralType.UART) !== -1) {
+        options.pinInfo[pin].peripherals = [ PeripheralType.UART ];
+      }
+    }
+  }
 
   return new CoreIO(options);
-};
+}

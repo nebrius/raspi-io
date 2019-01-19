@@ -1,3 +1,10 @@
+## 10.0.0 (2019-?)
+
+- BREAKING CHANGE: there is no longer a default export. Instead use `const Raspi = require('raspi-io').RaspiIO` or `import { RaspiIO as Raspi } from 'raspi-io';` to get the old behavior to work
+- BREAKING CHANGE: Switched from `raspi-io-core`@2.x.x to `core-io`@3.x.x. Note: Core IO is a major rewrite of Raspi IO Core, but is based on the same codebase. Check out [Core IO's changelog](https://github.com/nebrius/core-io/blob/master/CHANGELOG.md) for details. Relevant details for Raspi IO users are:
+    - _list important changes from Core IO here_
+- Added a new constructor property `enableI2C` that allows users to programatically enable or disable I2C
+
 ## 9.0.1 (2018-12-10)
 
 - Updated raspi-board to the latest version, which includes breaking changes. These changes are not surfaced by Raspi IO.

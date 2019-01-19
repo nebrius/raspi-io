@@ -14,6 +14,7 @@
     "robots"
   ],
   "dependencies": {
+    "clone": "^2.1.2",
     "core-io": "^3.0.0",
     "raspi": "^6.0.0",
     "raspi-board": "^7.1.1",
@@ -24,7 +25,9 @@
     "raspi-soft-pwm": "^5.1.0"
   },
   "devDependencies": {
+    "@types/clone": "^0.1.30",
     "@types/node": "^10.12.18",
+    "core-io-types": "^2.1.0",
     "tslint": "^5.12.1",
     "typescript": "^3.2.2"
   },
