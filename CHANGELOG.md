@@ -4,6 +4,7 @@
 - BREAKING CHANGE: Switched from `raspi-io-core`@2.x.x to `core-io`@3.x.x. Note: Core IO is a major rewrite of Raspi IO Core, but is based on the same codebase. Check out [Core IO's changelog](https://github.com/nebrius/core-io/blob/master/CHANGELOG.md) for details. Relevant details for Raspi IO users are:
     - _list important changes from Core IO here_
 - Added a new constructor property `enableI2C` that allows users to programatically enable or disable I2C
+- BREAKING CHANGE: The `name` property of this module now returns `"Raspi IO"` instead of `"RasperryPi-IO"` to conform with naming conventions elsewhere
 
 ## 9.0.1 (2018-12-10)
 
