@@ -46,6 +46,9 @@ function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true } = 
     };
     if (enableI2C) {
         options.platform.i2c = raspi_i2c_1.module;
+        options.i2cIds = {
+            DEFAULT: raspi_board_1.getBoardRevision() === raspi_board_1.VERSION_1_MODEL_B_REV_1 ? 0 : 1
+        };
     }
     if (typeof enableSerial === 'undefined') {
         enableSerial =

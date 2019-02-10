@@ -29,7 +29,8 @@ import {
   VERSION_3_MODEL_A_PLUS,
   VERSION_3_MODEL_B,
   VERSION_3_MODEL_B_PLUS,
-  VERSION_1_MODEL_ZERO_W
+  VERSION_1_MODEL_ZERO_W,
+  VERSION_1_MODEL_B_REV_1
 } from 'raspi-board';
 import { module as base } from 'raspi';
 import { module as gpio } from 'raspi-gpio';
@@ -60,6 +61,9 @@ export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = tr
 
   if (enableI2C) {
     options.platform.i2c = i2c;
+    options.i2cIds = {
+      DEFAULT: getBoardRevision() === VERSION_1_MODEL_B_REV_1 ? 0 : 1
+    };
   }
 
   if (typeof enableSerial === 'undefined') {
