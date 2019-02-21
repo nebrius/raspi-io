@@ -5,8 +5,10 @@
 - BREAKING CHANGE: The `name` property of this module now returns `"Raspi IO"` instead of `"RasperryPi-IO"` to conform with naming conventions elsewhere
 - BREAKING CHANGE: removed the `enableSoftPwm` and switched to using software PWM by default for all pins
     - Note: this means that hardware PWM is not used on the pins that support hardware PWM, we still use software PWM
-- BREAKING CHANGE: Switched from `raspi-io-core`@2.x.x to `j5-io`@3.x.x. Note: J5 IO is a major rewrite of Raspi IO Core. Check out [J5 IO's changelog](https://github.com/nebrius/core-io/blob/master/CHANGELOG.md) for details. Relevant details for Raspi IO users are:
-    - _list important changes from J5 IO here_
+- BREAKING CHANGE: `digital-read-${pin}` event names are now normalized. If, for example, you called `digitalRead("GPIO18", () => {})` on the Raspberry Pi, before the event name would be `digital-read-GPIO18`, but now it's `digital-read-1`
+
+Under the hood, I switched from `raspi-io-core`@2.x.x to `j5-io`@3.x.x. Note: J5 IO is a major rewrite of Raspi IO Core. Check out [J5 IO's changelog](https://github.com/nebrius/core-io/blob/master/CHANGELOG.md) for details. Note that many of those breaking changes are not surfaced in Raspi IO, and all breaking changes are listed above.
+
 
 ## 9.0.1 (2018-12-10)
 
