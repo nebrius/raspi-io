@@ -1,4 +1,4 @@
-## 10.0.0 (2019-?)
+## 10.0.0 (2019-2-21)
 
 - BREAKING CHANGE: there is no longer a default export. Instead use `const Raspi = require('raspi-io').RaspiIO` or `import { RaspiIO as Raspi } from 'raspi-io';` to get the old behavior to work
 - Added a new constructor property `enableI2C` that allows users to programatically enable or disable I2C
