@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { CoreIO, IOptions as ICoreIOOptions } from 'core-io';
-import { IPinInfo, PeripheralType } from 'core-io-types';
+import { J5IO, IOptions as IJ5IOOptions } from 'j5-io';
+import { IPinInfo, PeripheralType } from 'j5-io-types';
 import {
   getPins, getBoardRevision, getPinNumber,
   VERSION_3_MODEL_A_PLUS,
@@ -48,7 +48,7 @@ export interface IOptions {
 }
 
 export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true }: IOptions = {}) {
-  const options: ICoreIOOptions = {
+  const options: IJ5IOOptions = {
     pluginName: 'Raspi IO',
     pinInfo: clone(getPins()),
     platform: {
@@ -119,5 +119,5 @@ export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = tr
     }
   }
 
-  return new CoreIO(options);
+  return new J5IO(options);
 }

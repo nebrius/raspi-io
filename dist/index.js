@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_io_1 = require("core-io");
-const core_io_types_1 = require("core-io-types");
+const j5_io_1 = require("j5-io");
+const j5_io_types_1 = require("j5-io-types");
 const raspi_board_1 = require("raspi-board");
 const raspi_1 = require("raspi");
 const raspi_gpio_1 = require("raspi-gpio");
@@ -87,20 +87,20 @@ function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true } = 
     // I2C pins need to be dedicated in Raspi IO, so filter out any peripherals other than I2C on I2C pins
     if (enableI2C) {
         for (const pin in options.pinInfo) {
-            if (options.pinInfo[pin].peripherals.indexOf(core_io_types_1.PeripheralType.I2C) !== -1) {
-                options.pinInfo[pin].peripherals = [core_io_types_1.PeripheralType.I2C];
+            if (options.pinInfo[pin].peripherals.indexOf(j5_io_types_1.PeripheralType.I2C) !== -1) {
+                options.pinInfo[pin].peripherals = [j5_io_types_1.PeripheralType.I2C];
             }
         }
     }
     // UART pins need to be dedicated in Raspi IO, so filter out any peripherals other than UART on UART pins
     if (enableSerial) {
         for (const pin in options.pinInfo) {
-            if (options.pinInfo[pin].peripherals.indexOf(core_io_types_1.PeripheralType.UART) !== -1) {
-                options.pinInfo[pin].peripherals = [core_io_types_1.PeripheralType.UART];
+            if (options.pinInfo[pin].peripherals.indexOf(j5_io_types_1.PeripheralType.UART) !== -1) {
+                options.pinInfo[pin].peripherals = [j5_io_types_1.PeripheralType.UART];
             }
         }
     }
-    return new core_io_1.CoreIO(options);
+    return new j5_io_1.J5IO(options);
 }
 exports.RaspiIO = RaspiIO;
 //# sourceMappingURL=index.js.map
