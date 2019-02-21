@@ -1,3 +1,13 @@
+## 10.0.0 (2019-?)
+
+- BREAKING CHANGE: there is no longer a default export. Instead use `const Raspi = require('raspi-io').RaspiIO` or `import { RaspiIO as Raspi } from 'raspi-io';` to get the old behavior to work
+- Added a new constructor property `enableI2C` that allows users to programatically enable or disable I2C
+- BREAKING CHANGE: The `name` property of this module now returns `"Raspi IO"` instead of `"RasperryPi-IO"` to conform with naming conventions elsewhere
+- BREAKING CHANGE: removed the `enableSoftPwm` and switched to using software PWM by default for all pins
+    - Note: this means that hardware PWM is not used on the pins that support hardware PWM, we still use software PWM
+- BREAKING CHANGE: Switched from `raspi-io-core`@2.x.x to `j5-io`@3.x.x. Note: J5 IO is a major rewrite of Raspi IO Core. Check out [J5 IO's changelog](https://github.com/nebrius/core-io/blob/master/CHANGELOG.md) for details. Relevant details for Raspi IO users are:
+    - _list important changes from J5 IO here_
+
 ## 9.0.1 (2018-12-10)
 
 - Updated raspi-board to the latest version, which includes breaking changes. These changes are not surfaced by Raspi IO.
