@@ -84,9 +84,22 @@ function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true } = 
             delete options.pinInfo[normalizedPin];
         }
     }
+    // We use software PWM for everything, so we need to modify the peripherals to reflect this
+    for (const pin in options.pinInfo) {
+        if (!options.pinInfo.hasOwnProperty(pin)) {
+            continue;
+        }
+        const peripherals = options.pinInfo[pin].peripherals;
+        if (peripherals.indexOf(j5_io_types_1.PeripheralType.GPIO) !== -1 && peripherals.indexOf(j5_io_types_1.PeripheralType.PWM) === -1) {
+            peripherals.push(j5_io_types_1.PeripheralType.PWM);
+        }
+    }
     // I2C pins need to be dedicated in Raspi IO, so filter out any peripherals other than I2C on I2C pins
     if (enableI2C) {
         for (const pin in options.pinInfo) {
+            if (!options.pinInfo.hasOwnProperty(pin)) {
+                continue;
+            }
             if (options.pinInfo[pin].peripherals.indexOf(j5_io_types_1.PeripheralType.I2C) !== -1) {
                 options.pinInfo[pin].peripherals = [j5_io_types_1.PeripheralType.I2C];
             }
@@ -95,6 +108,9 @@ function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true } = 
     // UART pins need to be dedicated in Raspi IO, so filter out any peripherals other than UART on UART pins
     if (enableSerial) {
         for (const pin in options.pinInfo) {
+            if (!options.pinInfo.hasOwnProperty(pin)) {
+                continue;
+            }
             if (options.pinInfo[pin].peripherals.indexOf(j5_io_types_1.PeripheralType.UART) !== -1) {
                 options.pinInfo[pin].peripherals = [j5_io_types_1.PeripheralType.UART];
             }

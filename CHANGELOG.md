@@ -1,3 +1,7 @@
+## 10.0.2 (2019-4-15)
+
+- Fixed a bug where GPIO pins were not marked as PWM pins correctly
+
 ## 10.0.1 (2019-2-21)
 
 - Brought in an updated dependency

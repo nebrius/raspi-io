@@ -101,9 +101,23 @@ export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = tr
     }
   }
 
+  // We use software PWM for everything, so we need to modify the peripherals to reflect this
+  for (const pin in options.pinInfo) {
+    if (!options.pinInfo.hasOwnProperty(pin)) {
+      continue;
+    }
+    const peripherals = options.pinInfo[pin].peripherals;
+    if (peripherals.indexOf(PeripheralType.GPIO) !== -1 && peripherals.indexOf(PeripheralType.PWM) === -1) {
+      peripherals.push(PeripheralType.PWM);
+    }
+  }
+
   // I2C pins need to be dedicated in Raspi IO, so filter out any peripherals other than I2C on I2C pins
   if (enableI2C) {
     for (const pin in options.pinInfo) {
+      if (!options.pinInfo.hasOwnProperty(pin)) {
+        continue;
+      }
       if (options.pinInfo[pin].peripherals.indexOf(PeripheralType.I2C) !== -1) {
         options.pinInfo[pin].peripherals = [ PeripheralType.I2C ];
       }
@@ -113,6 +127,9 @@ export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = tr
   // UART pins need to be dedicated in Raspi IO, so filter out any peripherals other than UART on UART pins
   if (enableSerial) {
     for (const pin in options.pinInfo) {
+      if (!options.pinInfo.hasOwnProperty(pin)) {
+        continue;
+      }
       if (options.pinInfo[pin].peripherals.indexOf(PeripheralType.UART) !== -1) {
         options.pinInfo[pin].peripherals = [ PeripheralType.UART ];
       }
