@@ -27,6 +27,8 @@ Install with npm on a Raspberry Pi (not a laptop):
 npm install raspi-io
 ```
 
+**Note:** You must reboot your Raspberry Pi the first time you install Raspi IO on it!
+
 ## Usage
 
 Using Raspi IO inside of Johnny-Five is fairly straightforward, although does take an extra step compared to using Johnny-Five on the Arduino Uno:
@@ -45,6 +47,12 @@ board.on('ready', () => {
   (new five.Led('P1-7')).strobe();
 
 });
+```
+
+Then, run your code with:
+
+```bash
+sudo node index.js
 ```
 
 The `io` property must be specified explicitly to differentiate from trying to control, say, an Arduino Uno that is plugged into the Raspberry Pi. Note that we specify the pin as `"P1-7"`, not `7`. See the [section on pins](#pin-naming) below for an explanation of the pin numbering scheme on the Raspberry Pi, which can be a bit confusing.
