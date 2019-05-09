@@ -81,7 +81,7 @@ Also note that you will need to edit `/boot/config.txt` in order to change the I
 
 After you install Raspi IO for the first time, you _must_ reboot your Raspberry Pi. I2C support is not enabled by default, and this module runs a script to enable it automatically and adjust a few I2C settings. These settings will not take effect until you reboot your Pi.
 
-Finally, if you try to access a device that doesn't exist, you will get an error stating `EIO, i/o error` (sorry it's not very descriptive).
+Finally, if you try to access a device that doesn't exist, you will get an error stating `EIO, i/o error` (sorry it's not very descriptive, but it comes from the operating system and I can't change it).
 
 ### Serial notes
 
