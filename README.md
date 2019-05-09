@@ -107,10 +107,6 @@ The Bluetooth module on these Raspberry Pis is controlled using the serial port,
 
 For an in-depth discussion on why and how to work around it, read https://raspberrypi.stackexchange.com/questions/45570/how-do-i-make-serial-work-on-the-raspberry-pi3.
 
-### I2S notes
-
-I2S is not supported when running Raspi IO. Raspi IO uses [pigpio](https://github.com/joan2937/pigpio) for GPIO and PWM, and pigpio uses the PCM hardware for timing purposes via DMA. The PCM hardware can only be used for DMA _or_ I2S, but not both at the same time. See https://github.com/joan2937/pigpio/issues/87 for more info.
-
 ## API
 
 ### new RaspiIO(options)
