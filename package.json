@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "clone": "^2.1.2",
-    "j5-io": "^3.0.1",
+    "j5-io": "^3.1.0",
     "j5-io-types": "^2.4.0",
     "raspi": "^6.0.1",
     "raspi-board": "^7.1.2",
@@ -27,9 +27,9 @@
   },
   "devDependencies": {
     "@types/clone": "^0.1.30",
-    "@types/node": "^10.12.18",
-    "tslint": "^5.12.1",
-    "typescript": "^3.2.2"
+    "@types/node": "^10.14.9",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
   },
   "engines": {
     "node": ">= 6.4.0"
