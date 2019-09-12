@@ -1,3 +1,7 @@
+## 10.0.3 (2019-9-12)
+
+- Fixed a bug where serial wasn't being disabled on the RPi 4
+
 ## 10.0.2 (2019-4-15)
 
 - Fixed a bug where GPIO pins were not marked as PWM pins correctly

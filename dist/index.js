@@ -51,11 +51,14 @@ function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = true } = 
         };
     }
     if (typeof enableSerial === 'undefined') {
+        const boardRevision = raspi_board_1.getBoardRevision();
         enableSerial =
-            raspi_board_1.getBoardRevision() !== raspi_board_1.VERSION_3_MODEL_B &&
-                raspi_board_1.getBoardRevision() !== raspi_board_1.VERSION_3_MODEL_A_PLUS &&
-                raspi_board_1.getBoardRevision() !== raspi_board_1.VERSION_3_MODEL_B_PLUS &&
-                raspi_board_1.getBoardRevision() !== raspi_board_1.VERSION_1_MODEL_ZERO_W;
+            boardRevision === raspi_board_1.VERSION_1_MODEL_B_REV_1 ||
+                boardRevision === raspi_board_1.VERSION_1_MODEL_B_REV_2 ||
+                boardRevision === raspi_board_1.VERSION_1_MODEL_B_PLUS ||
+                boardRevision === raspi_board_1.VERSION_1_MODEL_A_PLUS ||
+                boardRevision === raspi_board_1.VERSION_1_MODEL_ZERO ||
+                boardRevision === raspi_board_1.VERSION_2_MODEL_B;
     }
     if (enableSerial) {
         options.platform.serial = raspi_serial_1.module;

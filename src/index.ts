@@ -26,11 +26,12 @@ import { J5IO, IOptions as IJ5IOOptions } from 'j5-io';
 import { IPinInfo, PeripheralType } from 'j5-io-types';
 import {
   getPins, getBoardRevision, getPinNumber,
-  VERSION_3_MODEL_A_PLUS,
-  VERSION_3_MODEL_B,
-  VERSION_3_MODEL_B_PLUS,
-  VERSION_1_MODEL_ZERO_W,
-  VERSION_1_MODEL_B_REV_1
+  VERSION_1_MODEL_B_REV_1,
+  VERSION_1_MODEL_B_REV_2,
+  VERSION_1_MODEL_B_PLUS,
+  VERSION_1_MODEL_A_PLUS,
+  VERSION_1_MODEL_ZERO,
+  VERSION_2_MODEL_B
 } from 'raspi-board';
 import { module as base } from 'raspi';
 import { module as gpio } from 'raspi-gpio';
@@ -67,11 +68,14 @@ export function RaspiIO({ includePins, excludePins, enableSerial, enableI2C = tr
   }
 
   if (typeof enableSerial === 'undefined') {
+    const boardRevision = getBoardRevision();
     enableSerial =
-      getBoardRevision() !== VERSION_3_MODEL_B &&
-      getBoardRevision() !== VERSION_3_MODEL_A_PLUS &&
-      getBoardRevision() !== VERSION_3_MODEL_B_PLUS &&
-      getBoardRevision() !== VERSION_1_MODEL_ZERO_W;
+      boardRevision === VERSION_1_MODEL_B_REV_1 ||
+      boardRevision === VERSION_1_MODEL_B_REV_2 ||
+      boardRevision === VERSION_1_MODEL_B_PLUS ||
+      boardRevision === VERSION_1_MODEL_A_PLUS ||
+      boardRevision === VERSION_1_MODEL_ZERO ||
+      boardRevision === VERSION_2_MODEL_B;
   }
   if (enableSerial) {
     options.platform.serial = serial;
