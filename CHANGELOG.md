@@ -1,3 +1,7 @@
+## 10.0.4 (2019-10-5)
+
+- Added `arm64` to the `cpu` field in package.json for installing on 64-bit Raspberry Pis
+
 ## 10.0.3 (2019-9-12)
 
 - Fixed a bug where serial wasn't being disabled on the RPi 4
