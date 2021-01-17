@@ -1,6 +1,8 @@
 Raspi IO
 ========
 
+**NOTE: This project is in maintenance mode and no longer actively maintained.**
+
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nebrius/raspi-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Raspi IO is an I/O plugin for the [Johnny-Five](https://github.com/rwaldron/johnny-five) Node.js robotics platform that enables Johnny-Five to control the hardware on a Raspberry Pi. The API docs for this module can be found on the [Johnny-Five I/O Plugin specification page](https://github.com/rwaldron/io-plugins), except for the constructor which is documented below. Raspi IO supports all models of the Raspberry Pi, except for the Model A and compute modules.
